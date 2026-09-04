@@ -1,94 +1,112 @@
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
+import { Box, Button, IconButton, Typography } from '@mui/material';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import { useLocation } from 'react-router-dom';
+import { menuItems } from './Sidebar';
 
 function Topbar() {
+  const location = useLocation();
+  const activeMenuItem = menuItems.find(
+    ({ path }) => location.pathname === path || (path === '/dashboard' && location.pathname === '/')
+  );
+
   return (
-    <AppBar
-      position="sticky"
-      elevation={0}
+    <Box
       sx={{
-        bgcolor: '#f8faf8', // exact light bg from image
-        color: '#12201c',
-        borderBottom: '1px solid rgba(0,0,0,0.06)',
-        top: 0,
+        position: 'sticky',
+        top: 12,
         zIndex: 1100,
+        width: '100%',
+        px: 0,
+        py: 0,
       }}
     >
-      <Toolbar
+      <Box
         sx={{
-          minHeight: { xs: 64, md: 72 },
-          px: { xs: 2, md: 3 },
+          width: '100%',
+          minHeight: { xs: 104, md: 112 },
+          bgcolor: 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(14px)',
+          borderRadius: '22px',
+          border: '1px solid rgba(0,0,0,0.07)',
+          boxShadow: '0 10px 36px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          px: { xs: 6, md: 8 },
+          py: 4,
+          boxSizing: 'border-box',
         }}
       >
-        {/* LEFT - Title like image */}
+        {/* LEFT - Bigger fonts */}
         <Box>
           <Typography
             sx={{
-              fontSize: { xs: 22, md: 26 },
-              fontWeight: 800,
-              color: '#111827',
-              lineHeight: 1.1,
-              letterSpacing: '-0.02em',
+              fontSize: { xs: 40, md: 50 },
+              fontWeight: 900,
+              color: '#0f1e14',
+              lineHeight: 1.05,
+              letterSpacing: '-0.03em',
             }}
           >
-            National Dashboard
+            {activeMenuItem?.label === 'Dashboard'
+              ? 'National Dashboard'
+              : activeMenuItem?.label || 'National Dashboard'}
           </Typography>
           <Typography
             sx={{
-              fontSize: { xs: 12, md: 13 },
-              fontWeight: 500,
+              fontSize: { xs: 20, md: 20 },
+              fontWeight: 600,
               color: '#5b6b62',
-              mt: 0.2,
+              mt: 0.5,
+              letterSpacing: '0.01em',
             }}
           >
             RFCT LARR Act — Real-time Management
           </Typography>
         </Box>
 
-        {/* RIGHT - Bell + New Project like image */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        {/* RIGHT - Bigger buttons */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.6 }}>
           <IconButton
             aria-label="notifications"
             sx={{
               bgcolor: '#ffffff',
               color: '#1e5a4a',
-              width: 44,
-              height: 44,
-              borderRadius: 3,
-              border: '1px solid rgba(0,0,0,0.06)',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
-              '&:hover': { bgcolor: '#ffffff' },
+              width: 60,
+              height: 65,
+              borderRadius: '14px',
+              border: '1px solid rgba(0,0,0,0.08)',
+              boxShadow: '0 3px 10px rgba(0,0,0,0.07)',
+              '&:hover': { bgcolor: '#f5f7f0' },
             }}
           >
-            <NotificationsNoneOutlinedIcon sx={{ fontSize: 22 }} />
+            <NotificationsNoneOutlinedIcon sx={{ fontSize: 40 }} />
           </IconButton>
 
           <Button
             variant="contained"
             sx={{
-              bgcolor: '#128152',
-              background: 'linear-gradient(180deg, #1a9d68 0%, #117a4e 100%)',
+              bgcolor: '#16633d',
+              background: 'linear-gradient(180deg, #219f66 0%, #16633d 100%)',
               color: '#fff',
               borderRadius: 9999,
-              px: 2.5,
-              minHeight: 44,
-              boxShadow: '0 2px 8px rgba(17, 122, 78, 0.25)',
+              px: 3.2,
+              minHeight: 48,
+              boxShadow: '0 6px 16px rgba(22, 99, 61, 0.3)',
               textTransform: 'none',
-              fontWeight: 700,
-              fontSize: 15,
+              fontWeight: 800,
+              fontSize: 25,
+              letterSpacing: '-0.01em',
               '&:hover': {
-                background: 'linear-gradient(180deg, #1a9d68 0%, #0e6a43 100%)',
+                background: 'linear-gradient(180deg, #26ad71 0%, #134f31 100%)',
               },
             }}
           >
             + New Project
           </Button>
         </Box>
-      </Toolbar>
-    </AppBar>
+      </Box>
+    </Box>
   );
 }
 
