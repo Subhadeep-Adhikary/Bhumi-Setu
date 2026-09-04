@@ -1,6 +1,5 @@
 import { Box, Typography, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
-import ProjectList from './ProjectList';
 
 export const projects = [
   { name: 'Polavaram Irrigation Canal Network', status: 'completed' },
@@ -66,26 +65,36 @@ export default function Dashboard({ selectedProject, onSelectProject }) {
           </Link>
         </div>
 
-        <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="rounded-[26px] border border-[#e9ece7] border-t-4 border-t-[#1a8a64] bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.07)]">
-            <p className="text-sm font-bold uppercase tracking-wide text-[#6a8a7c]">Total Projects</p>
-            <p className="mt-3 text-4xl font-black leading-none text-[#1d4a3d]">{total}</p>
-          </div>
-          <div className="rounded-[26px] border border-[#e9ece7] border-t-4 border-t-[#14b47e] bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.07)]">
-            <p className="text-sm font-bold uppercase tracking-wide text-[#6a8a7c]">Completed Projects</p>
-            <p className="mt-3 text-4xl font-black leading-none text-[#1f8e67]">{completed}</p>
-          </div>
-          <div className="rounded-[26px] border border-[#e9ece7] border-t-4 border-t-[#e7a84d] bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.07)]">
-            <p className="text-sm font-bold uppercase tracking-wide text-[#6a8a7c]">Pending Projects</p>
-            <p className="mt-3 text-4xl font-black leading-none text-[#b47a1f]">{pending}</p>
-          </div>
-        </div>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 4, mb: 10, width: '100%' }} name="boxes of statistics">
+          <Box sx={{ minHeight: 112, bgcolor: 'white', borderRadius: '26px', p: 2, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', border: '1px solid #e9ece7', borderTop: '4px solid #1a8a64', transition: 'transform 0.2s ease, box-shadow 0.2s ease', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 14px 34px rgba(22,99,61,0.14)' } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#6a8a7c' }}>Total Projects</Typography>
+              <Box aria-hidden="true" sx={{ width: 36, height: 36, borderRadius: '50%', bgcolor: '#d8eee7', display: 'grid', placeItems: 'center', color: '#16633d', fontSize: 18, fontWeight: 700 }}>#</Box>
+            </Box>
+            <Typography sx={{ mt: 1.5, fontSize: 36, fontWeight: 900, lineHeight: 1, color: '#1d4a3d' }}>{total}</Typography>
+            <Typography sx={{ mt: 0.5, fontSize: 13, fontWeight: 600, color: '#6a8a7c' }}>Across all acquisition stages</Typography>
+          </Box>
 
-        <ProjectList
-          projects={projects}
-          selectedProject={selectedProject}
-          onSelect={onSelectProject}
-        />
+          <Box sx={{ minHeight: 112, bgcolor: 'white', borderRadius: '26px', p: 2, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', border: '1px solid #e9ece7', borderTop: '4px solid #14b47e', transition: 'transform 0.2s ease, box-shadow 0.2s ease', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 14px 34px rgba(20,180,126,0.14)' } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#6a8a7c' }}>Completed Projects</Typography>
+              <Box aria-hidden="true" sx={{ width: 36, height: 36, borderRadius: '50%', bgcolor: '#d8eee7', display: 'grid', placeItems: 'center', color: '#1f8e67', fontSize: 18, fontWeight: 900 }}>✓</Box>
+            </Box>
+            <Typography sx={{ mt: 1.5, fontSize: 36, fontWeight: 900, lineHeight: 1, color: '#1f8e67' }}>{completed}</Typography>
+            <Typography sx={{ mt: 0.5, fontSize: 13, fontWeight: 600, color: '#6a8a7c' }}>Successfully processed</Typography>
+          </Box>
+
+          <Box sx={{ minHeight: 112, bgcolor: 'white', borderRadius: '26px', p: 2, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', border: '1px solid #e9ece7', borderTop: '4px solid #e7a84d', transition: 'transform 0.2s ease, box-shadow 0.2s ease', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 14px 34px rgba(231,168,77,0.16)' } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#6a8a7c' }}>Pending Projects</Typography>
+              <Box aria-hidden="true" sx={{ width: 36, height: 36, borderRadius: '50%', bgcolor: '#ffedd5', display: 'grid', placeItems: 'center', color: '#b47a1f', fontSize: 18 }}>◷</Box>
+            </Box>
+            <Typography sx={{ mt: 1.5, fontSize: 36, fontWeight: 900, lineHeight: 1, color: '#b47a1f' }}>{pending}</Typography>
+            <Typography sx={{ mt: 0.5, fontSize: 13, fontWeight: 600, color: '#6a8a7c' }}>Awaiting next action</Typography>
+          </Box>
+        </Box>
+
+      
 
         {/* UPPER 3 CARDS - INCREASED SIZE */}
         <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} sx={{ width: '100%', alignItems: 'stretch' }}>
