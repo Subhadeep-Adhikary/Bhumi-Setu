@@ -1,4 +1,4 @@
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export const projects = [
@@ -55,15 +55,7 @@ export default function Dashboard({ selectedProject, onSelectProject }) {
     <Box sx={{ width: '100%', minHeight: '100vh', bgcolor: '#ecebe6', p: 0 }}>
       <Box sx={{ width: '100%', p: 3, boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
 
-        <div className="mb-5 flex items-center justify-between">
-          <h1 className="text-2xl font-black text-[#1d4a3d]">Dashboard</h1>
-          <Link
-            to="/projects"
-            className="rounded-lg px-3 py-2 text-sm font-bold text-[#16633d] transition-colors hover:bg-[#dfead8] hover:text-[#0f4b2f] focus:outline-none focus:ring-2 focus:ring-[#1a8a64] focus:ring-offset-2"
-          >
-            View All
-          </Link>
-        </div>
+        <h1 className="mb-5 text-2xl font-black text-[#1d4a3d]">Dashboard</h1>
 
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 4, mb: 10, width: '100%' }} name="boxes of statistics">
           <Box sx={{ minHeight: 112, bgcolor: 'white', borderRadius: '26px', p: 2, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', border: '1px solid #e9ece7', borderTop: '4px solid #1a8a64', transition: 'transform 0.2s ease, box-shadow 0.2s ease', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 14px 34px rgba(22,99,61,0.14)' } }}>
@@ -96,10 +88,12 @@ export default function Dashboard({ selectedProject, onSelectProject }) {
 
       
 
-        {/* UPPER 3 CARDS - INCREASED SIZE */}
-        <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} sx={{ width: '100%', alignItems: 'stretch' }}>
-          
-          <Box sx={{ flex: 1, minHeight: 280, bgcolor: 'white', borderRadius: '26px', p: 4, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', border: '1px solid #e9ece7', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, minmax(0, 1fr))' }, gap: 3, alignItems: 'stretch' }}>
+          <Box sx={{ bgcolor: '#eef6e6', borderRadius: '26px', p: 3, border: '1px solid #dfead8', boxShadow: '0 10px 30px rgba(0,0,0,0.06)' }}>
+            <Typography sx={{ fontWeight: 900, fontSize: 23, color: '#11261c', mb: 2 }}>Projects</Typography>
+
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' }, gap: 3 }}>
+            <Box sx={{ minHeight: 220, bgcolor: 'white', borderRadius: '26px', p: 3, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Box>
               <Typography sx={{ fontWeight: 900, fontSize: 22, color: '#11261c', lineHeight: 1.25 }}>Polavaram Irrigation Canal Network</Typography>
               <Typography sx={{ fontSize: 15.5, color: '#1a8a64', fontWeight: 700, mt: 0.8 }}>Andhra Pradesh • ₹6,750 Cr</Typography>
@@ -109,9 +103,9 @@ export default function Dashboard({ selectedProject, onSelectProject }) {
               <ProgressBar value={49} gradient="linear-gradient(90deg, #129b71, #88d9a8)" />
               <Typography sx={{ fontSize: 14, color: '#c43a3a', fontWeight: 800, mt: 1.5 }}>⚠ +634 overdue</Typography>
             </Box>
-          </Box>
+            </Box>
 
-          <Box sx={{ flex: 1, minHeight: 280, bgcolor: 'white', borderRadius: '26px', p: 4, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', border: '1px solid #e9ece7', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <Box sx={{ minHeight: 220, bgcolor: 'white', borderRadius: '26px', p: 3, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Box>
               <Typography sx={{ fontWeight: 900, fontSize: 22, color: '#11261c', lineHeight: 1.25 }}>Pune-Mumbai Hyperloop Corridor</Typography>
               <Typography sx={{ fontSize: 15.5, color: '#1a5a8a', fontWeight: 700, mt: 0.8 }}>Maharashtra • ₹12,400 Cr</Typography>
@@ -124,10 +118,21 @@ export default function Dashboard({ selectedProject, onSelectProject }) {
               </Box>
               <Typography sx={{ fontSize: 14, color: '#b47a1f', fontWeight: 800, mt: 1.5 }}>● +56 overdue</Typography>
             </Box>
+            </Box>
+          <Box sx={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', justifySelf: 'center', alignSelf: 'end', width: '20%', mt: 2, paddingTop: 1, backgroundColor: '#2ecf39', borderRadius: '16px', border: '1px solid #112802', boxShadow: '0 6px 16px rgba(22,99,61,0.3)' }}>
+            <Link
+              to="/projects"
+              aria-label="View all projects"
+              className="flex items-center justify-center rounded-[16px] bg-[#16633d] px-8 py-3 text-lg font-extrabold text-white shadow-[0_6px_16px_rgba(22,99,61,0.3)] transition-colors hover:bg-[#134f31] focus:outline-none focus:ring-2 focus:ring-[#1a8a64] focus:ring-offset-2"
+            >
+              View All
+            </Link>
+            </Box>
+          </Box>
           </Box>
 
-          <Box sx={{ flex: 1, minHeight: 280, bgcolor: 'white', borderRadius: '26px', p: 4, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', border: '1px solid #e9ece7' }}>
-            <Typography sx={{ fontWeight: 900, fontSize: 21, color: '#11261c', mb: 3.5 }}>Acquisition Status</Typography>
+          <Box sx={{ minHeight: 220, bgcolor: '#ffffff', borderRadius: '26px', p: 3, border: '1px solid #e9ece7', boxShadow: '0 10px 30px rgba(0,0,0,0.06)' }}>
+            <Typography sx={{ fontWeight: 900, fontSize: 21, color: '#11261c', mb: 3.5 }}>Land Acquisition Status</Typography>
             {[
               { l: 'Acquired', v: 58.4, c: '#14b47e' },
               { l: 'Under Acquisition', v: 21.2, c: '#3a9bd4' },
@@ -145,7 +150,7 @@ export default function Dashboard({ selectedProject, onSelectProject }) {
               </Box>
             ))}
           </Box>
-        </Stack>
+        </Box>
 
         {/* SPACING BEFORE STATE-WISE - 32px gap */}
         <Box sx={{ height: 36 }} />
