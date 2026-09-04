@@ -20,11 +20,18 @@ export const menuItems = [
   { label: 'AI Decision Support', path: '/ai-decision-support', icon: AutoAwesomeOutlinedIcon },
 ];
 
-function Sidebar() {
+function Sidebar({ selectedProject }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const workflowPaths = ['/documents', '/statutory-workflow', '/compensation-calc'];
+
   const handleNavigation = (path) => {
+    if (workflowPaths.includes(path) && !selectedProject) {
+      window.alert('Please select a project');
+      return;
+    }
+
     navigate(path);
   };
 

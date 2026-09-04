@@ -1,4 +1,19 @@
 import { Box, Typography, Stack } from '@mui/material';
+import { Link } from 'react-router-dom';
+import ProjectList from './ProjectList';
+
+export const projects = [
+  { name: 'Polavaram Irrigation Canal Network', status: 'completed' },
+  { name: 'Pune-Mumbai Hyperloop Corridor', status: 'pending' },
+];
+
+export function getProjectStats(projectList) {
+  return {
+    total: projectList.length,
+    completed: projectList.filter((project) => project.status === 'completed').length,
+    pending: projectList.filter((project) => project.status === 'pending').length,
+  };
+}
 
 const Donut3D = ({ value, c1, c2 }) => {
   const size = 140;
@@ -34,10 +49,43 @@ const ProgressBar = ({ value, gradient }) => (
   </Box>
 );
 
-export default function Dashboard() {
+export default function Dashboard({ selectedProject, onSelectProject }) {
+  const { total, completed, pending } = getProjectStats(projects);
+
   return (
     <Box sx={{ width: '100%', minHeight: '100vh', bgcolor: '#ecebe6', p: 0 }}>
       <Box sx={{ width: '100%', p: 3, boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
+
+        <div className="mb-5 flex items-center justify-between">
+          <h1 className="text-2xl font-black text-[#1d4a3d]">Dashboard</h1>
+          <Link
+            to="/projects"
+            className="rounded-lg px-3 py-2 text-sm font-bold text-[#16633d] transition-colors hover:bg-[#dfead8] hover:text-[#0f4b2f] focus:outline-none focus:ring-2 focus:ring-[#1a8a64] focus:ring-offset-2"
+          >
+            View All
+          </Link>
+        </div>
+
+        <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="rounded-[26px] border border-[#e9ece7] border-t-4 border-t-[#1a8a64] bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.07)]">
+            <p className="text-sm font-bold uppercase tracking-wide text-[#6a8a7c]">Total Projects</p>
+            <p className="mt-3 text-4xl font-black leading-none text-[#1d4a3d]">{total}</p>
+          </div>
+          <div className="rounded-[26px] border border-[#e9ece7] border-t-4 border-t-[#14b47e] bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.07)]">
+            <p className="text-sm font-bold uppercase tracking-wide text-[#6a8a7c]">Completed Projects</p>
+            <p className="mt-3 text-4xl font-black leading-none text-[#1f8e67]">{completed}</p>
+          </div>
+          <div className="rounded-[26px] border border-[#e9ece7] border-t-4 border-t-[#e7a84d] bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.07)]">
+            <p className="text-sm font-bold uppercase tracking-wide text-[#6a8a7c]">Pending Projects</p>
+            <p className="mt-3 text-4xl font-black leading-none text-[#b47a1f]">{pending}</p>
+          </div>
+        </div>
+
+        <ProjectList
+          projects={projects}
+          selectedProject={selectedProject}
+          onSelect={onSelectProject}
+        />
 
         {/* UPPER 3 CARDS - INCREASED SIZE */}
         <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} sx={{ width: '100%', alignItems: 'stretch' }}>

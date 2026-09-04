@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Box } from '@mui/material';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import Dashboard from './components/Dashboard';
+import { projects } from './components/Dashboard';
+import ProjectList from './components/ProjectList';
 import GISMap from './components/GISMap';
 import Workflow from './components/Workflow';
 import CompensationCalc from './components/CompensationCalc';
@@ -11,6 +14,8 @@ import Alerts from './components/Alerts';
 import DecisionSupport from './components/DecisionSupport';
 
 function App() {
+  const [selectedProject, setSelectedProject] = useState(null);
+
   return (
     <Box
       sx={{
@@ -20,7 +25,7 @@ function App() {
         p: 0,
       }}
     >
-      <Sidebar />
+      <Sidebar selectedProject={selectedProject} />
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <Topbar />
@@ -28,7 +33,20 @@ function App() {
         <Box sx={{ flex: 1, p: 2.5, overflowY: 'auto' }}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route
+              path="/dashboard"
+              element={<Dashboard selectedProject={selectedProject} onSelectProject={setSelectedProject} />}
+            />
+            <Route
+              path="/projects"
+              element={(
+                <ProjectList
+                  projects={projects}
+                  selectedProject={selectedProject}
+                  onSelect={setSelectedProject}
+                />
+              )}
+            />
             <Route path="/gis-map" element={<GISMap />} />
             <Route path="/statutory-workflow" element={<Workflow />} />
             <Route path="/compensation-calc" element={<CompensationCalc />} />
