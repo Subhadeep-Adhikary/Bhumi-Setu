@@ -14,6 +14,7 @@ import Alerts from './components/Alerts';
 import DecisionSupport from './components/DecisionSupport';
 import Auth from './components/Auth';
 import NewProjectDialog from './components/NewProjectDialog';
+import { hasSession } from './api';
 import useProjects from './hooks/useProjects';
 
 function normalizeProject(project) {
@@ -37,6 +38,10 @@ function App() {
         <Route path="/register" element={<Auth />} />
       </Routes>
     );
+  }
+
+  if (!hasSession()) {
+    return <Navigate to="/login" replace />;
   }
 
   return (

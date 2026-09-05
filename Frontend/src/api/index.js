@@ -6,6 +6,11 @@ function getToken() {
   return localStorage.getItem(tokenStorageKey);
 }
 
+export function clearSession() {
+  localStorage.removeItem(tokenStorageKey);
+  localStorage.removeItem(userStorageKey);
+}
+
 async function request(path, options = {}) {
   const headers = {
     ...(options.body ? { 'Content-Type': 'application/json' } : {}),
@@ -14,6 +19,13 @@ async function request(path, options = {}) {
   };
   const response = await fetch(`${apiBaseUrl}${path}`, { ...options, headers });
   const data = await response.json().catch(() => ({}));
+
+  if (response.status === 401) {
+    clearSession();
+    if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+      window.location.assign('/login');
+    }
+  }
 
   if (!response.ok) {
     throw new Error(data.message || 'Unable to reach the backend');
