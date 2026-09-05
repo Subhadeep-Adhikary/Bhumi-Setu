@@ -1,38 +1,9 @@
 import { Box, Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { useProjectDetail } from '../hooks/projectdetail';
 
-const documents = [
-  {
-    name: 'Jambandi_NH44_Parcel_…',
-    owner: 'Ramesh Kumar Singh',
-    plot: '2341',
-    area: '2.4 ha',
-    match: 98,
-    status: 'Verified',
-    action: 'View',
-  },
-  {
-    name: 'Khatiyan_DFC_Parcel_881…',
-    owner: 'Sunita Devi',
-    plot: '8812',
-    area: '1.1 ha',
-    match: 63,
-    status: 'Mismatch',
-    action: 'View',
-    flagged: true,
-  },
-  {
-    name: 'Form_712_Pune_Metro_…',
-    owner: 'Prakash Naik',
-    plot: 'P842',
-    area: '0.8 ha',
-    match: 0,
-    status: 'Processing...',
-    action: 'View',
-    pending: true,
-  },
-];
-
-function Documents() {
+function Documents({ projectId }) {
+  const project = useProjectDetail(projectId);
+  const documents = project.documents;
   return (
     <Box
       sx={{
@@ -109,9 +80,9 @@ function Documents() {
         <Typography sx={{ fontSize: 28, fontWeight: 800, color: '#183f35' }}>Verified Documents</Typography>
 
         <Stack direction="row" spacing={1}>
-          <Box sx={{ bgcolor: '#dfece1', borderRadius: 2, color: '#1a5e4c', px: 1.2, py: 0.5, fontSize: 12, fontWeight: 700 }}>3 Verified</Box>
-          <Box sx={{ bgcolor: '#f8d9d9', borderRadius: 2, color: '#c84d4d', px: 1.2, py: 0.5, fontSize: 12, fontWeight: 700 }}>1 Mismatch</Box>
-          <Box sx={{ bgcolor: '#f5e4bf', borderRadius: 2, color: '#9b6b00', px: 1.2, py: 0.5, fontSize: 12, fontWeight: 700 }}>1 Pending OCR</Box>
+          <Box sx={{ bgcolor: '#dfece1', borderRadius: 2, color: '#1a5e4c', px: 1.2, py: 0.5, fontSize: 12, fontWeight: 700 }}>{documents.filter((doc) => doc.status === 'Verified').length} Verified</Box>
+          <Box sx={{ bgcolor: '#f8d9d9', borderRadius: 2, color: '#c84d4d', px: 1.2, py: 0.5, fontSize: 12, fontWeight: 700 }}>{documents.filter((doc) => doc.status === 'Mismatch').length} Mismatch</Box>
+          <Box sx={{ bgcolor: '#f5e4bf', borderRadius: 2, color: '#9b6b00', px: 1.2, py: 0.5, fontSize: 12, fontWeight: 700 }}>{documents.filter((doc) => doc.status === 'Processing...').length} Pending OCR</Box>
         </Stack>
       </Box>
 

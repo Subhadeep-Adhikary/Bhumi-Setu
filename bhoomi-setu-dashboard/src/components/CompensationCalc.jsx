@@ -1,17 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Box, FormControl, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { useProjectDetail } from '../hooks/projectdetail';
 
 const multiplierMap = {
   Urban: 1,
   'Rural (2x)': 2,
   'Remote (3x)': 3,
 };
-
-const payments = [
-  { name: 'Ramesh Kumar Singh', amount: '₹28,80,000', date: '12 Jul 2026', status: 'Paid' },
-  { name: 'Sunita Devi', amount: '₹13,20,000', date: '—', status: 'Pending' },
-  { name: 'Prakash Naik', amount: '₹9,60,000', date: '—', status: 'Processing' },
-];
 
 const landUseOptions = [
   'Agricultural — Irrigated',
@@ -21,11 +16,19 @@ const landUseOptions = [
   'Industrial',
 ];
 
-function CompensationCalc() {
-  const [landArea, setLandArea] = useState('2.4');
-  const [marketValue, setMarketValue] = useState('1200000');
-  const [multiplier, setMultiplier] = useState('Rural (2x)');
-  const [landUse, setLandUse] = useState('Agricultural — Irrigated');
+function CompensationCalc({ projectId }) {
+  const project = useProjectDetail(projectId);
+  const [landArea, setLandArea] = useState(project.compensation.landArea);
+  const [marketValue, setMarketValue] = useState(project.compensation.marketValue);
+  const [multiplier, setMultiplier] = useState(project.compensation.multiplier);
+  const [landUse, setLandUse] = useState(project.compensation.landUse);
+
+  useEffect(() => {
+    setLandArea(project.compensation.landArea);
+    setMarketValue(project.compensation.marketValue);
+    setMultiplier(project.compensation.multiplier);
+    setLandUse(project.compensation.landUse);
+  }, [project]);
 
   const calculations = useMemo(() => {
     const area = Number(landArea) || 0;
@@ -33,7 +36,7 @@ function CompensationCalc() {
     const multiplierFactor = multiplierMap[multiplier] || 1;
 
     const baseMarketValue = area * baseRate * multiplierFactor;
-    const solatium = baseMarketValue * 0.1;
+    const solatium = baseMarketValue * project.compensation.solatiumRate;
     const totalComp = baseMarketValue + solatium;
 
     return {
@@ -41,7 +44,7 @@ function CompensationCalc() {
       solatium,
       totalComp,
     };
-  }, [landArea, marketValue, multiplier]);
+  }, [landArea, marketValue, multiplier, project.compensation.solatiumRate]);
 
   const statusColor = {
     Paid: '#dfece7',
@@ -76,19 +79,6 @@ function CompensationCalc() {
           </Typography>
         </Box>
 
-        <Box
-          sx={{
-            bgcolor: '#dfece1',
-            borderRadius: 2,
-            color: '#1a5e4c',
-            px: 1.4,
-            py: 0.7,
-            fontSize: 13,
-            fontWeight: 700,
-          }}
-        >
-          + New Project
-        </Box>
       </Stack>
 
       <Stack direction="row" spacing={3} sx={{ mb: 3 }}>
@@ -217,7 +207,7 @@ function CompensationCalc() {
           </Typography>
 
           <Stack spacing={1.2}>
-            {payments.map((p) => (
+            {project.compensation.payments.map((p) => (
               <Box
                 key={p.name}
                 sx={{
@@ -233,7 +223,7 @@ function CompensationCalc() {
               >
                 <Box sx={{ minWidth: 0 }}>
                   <Typography sx={{ fontSize: 15, fontWeight: 700, color: '#183f35' }}>{p.name}</Typography>
-                  <Typography sx={{ fontSize: 12, color: '#4d7866' }}>{p.amount}</Typography>
+                  <Typography sx={{ fontSize: 12, color: '#4d7866' }}>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(p.amount)}</Typography>
                 </Box>
 
                 <Box

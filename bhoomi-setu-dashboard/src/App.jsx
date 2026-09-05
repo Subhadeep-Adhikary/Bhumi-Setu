@@ -48,9 +48,9 @@ function App() {
               )}
             />
             <Route path="/gis-map" element={<GISMap />} />
-            <Route path="/statutory-workflow" element={<Workflow />} />
-            <Route path="/compensation-calc" element={<CompensationCalc />} />
-            <Route path="/documents" element={<Documents />} />
+            <Route path="/statutory-workflow" element={<Workflow projectId={selectedProject?.id} />} />
+            <Route path="/compensation-calc" element={<CompensationCalc projectId={selectedProject?.id} />} />
+            <Route path="/documents" element={<Documents projectId={selectedProject?.id} />} />
             <Route path="/smart-alerts" element={<Alerts />} />
             <Route path="/ai-decision-support" element={<DecisionSupport />} />
           </Routes>

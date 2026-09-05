@@ -1,10 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { getProjectProgress, projectDetails } from '../hooks/projectdetail';
 
-export const projects = [
-  { name: 'Polavaram Irrigation Canal Network', status: 'completed' },
-  { name: 'Pune-Mumbai Hyperloop Corridor', status: 'pending' },
-];
+export const projects = projectDetails;
 
 export function getProjectStats(projectList) {
   return {
@@ -100,7 +98,7 @@ export default function Dashboard({ selectedProject, onSelectProject }) {
             </Box>
             <Box sx={{ mt: 4 }}>
               <Typography sx={{ fontSize: 16.5, fontWeight: 800, color: '#1a3a2e', mb: 1.4 }}>Sec. 77 Compensation</Typography>
-              <ProgressBar value={49} gradient="linear-gradient(90deg, #129b71, #88d9a8)" />
+              <ProgressBar value={getProjectProgress(projects[0])} gradient="linear-gradient(90deg, #129b71, #88d9a8)" />
               <Typography sx={{ fontSize: 14, color: '#c43a3a', fontWeight: 800, mt: 1.5 }}>⚠ +634 overdue</Typography>
             </Box>
             </Box>
@@ -113,7 +111,7 @@ export default function Dashboard({ selectedProject, onSelectProject }) {
             <Box sx={{ mt: 4 }}>
               <Typography sx={{ fontSize: 16.5, fontWeight: 800, color: '#1a3a2e', mb: 1.4 }}>SIA</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                <Box sx={{ flex: 1 }}><ProgressBar value={23} gradient="linear-gradient(90deg, #2d9bdf, #6ec6f0)" /></Box>
+                <Box sx={{ flex: 1 }}><ProgressBar value={getProjectProgress(projects[1])} gradient="linear-gradient(90deg, #2d9bdf, #6ec6f0)" /></Box>
                 <Box sx={{ bgcolor: '#ffedd5', color: '#9a4d00', fontSize: 13, fontWeight: 800, px: 1.8, py: 0.6, borderRadius: 99, border: '1px solid #fed7aa' }}>🔥 Medium</Box>
               </Box>
               <Typography sx={{ fontSize: 14, color: '#b47a1f', fontWeight: 800, mt: 1.5 }}>● +56 overdue</Typography>

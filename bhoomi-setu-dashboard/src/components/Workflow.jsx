@@ -1,52 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material';
+import { useProjectDetail } from '../hooks/projectdetail';
 
-const stages = [
-  {
-    title: 'Social Impact Assessment',
-    short: 'SIA',
-    status: 'completed',
-    description: 'Pre-Process',
-    date: 'Sec. 15',
-  },
-  {
-    title: 'Preliminary Notification',
-    short: 'S.19',
-    status: 'completed',
-    description: 'Declaration',
-    date: 'Sec. 19',
-  },
-  {
-    title: 'Objections & Hearing',
-    short: 'S.23',
-    status: 'completed',
-    description: 'Hearing',
-    date: 'Sec. 23',
-  },
-  {
-    title: 'Declaration',
-    short: 'S.77',
-    status: 'active',
-    description: 'Award & Acquisition',
-    date: 'Sec. 77',
-    activeLabel: 'In Progress',
-  },
-  {
-    title: 'Award',
-    short: 'S.77',
-    status: 'pending',
-    description: 'Compensation',
-    date: 'Sec. 77',
-  },
-  {
-    title: 'Compensation',
-    short: 'S.77',
-    status: 'pending',
-    description: 'Disbursement',
-    date: 'Sec. 77',
-  },
-];
+function Workflow({ projectId }) {
+  const project = useProjectDetail(projectId);
+  const activeStage = project.stages.find((stage) => stage.status === 'active') || project.stages[project.stages.length - 1];
 
-function Workflow() {
   return (
     <Box
       sx={{
@@ -74,12 +32,12 @@ function Workflow() {
             fontWeight: 700,
           }}
         >
-          Medium
+          {project.risk}
         </Box>
       </Stack>
 
       <Stack direction="row" alignItems="flex-start" spacing={1.8} sx={{ mb: 4 }}>
-        {stages.map((stage, index) => {
+        {project.stages.map((stage, index) => {
           const isActive = stage.status === 'active';
           const isCompleted = stage.status === 'completed';
 
@@ -105,7 +63,7 @@ function Workflow() {
               >
                 {isCompleted ? '✓' : stage.short}
 
-                {index < stages.length - 1 && (
+                {index < project.stages.length - 1 && (
                   <Box
                     sx={{
                       position: 'absolute',
@@ -139,10 +97,10 @@ function Workflow() {
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Box>
               <Typography sx={{ fontSize: 26, fontWeight: 800, color: '#173f33', lineHeight: 1.1 }}>
-                Declaration
+                {activeStage.title}
               </Typography>
               <Typography sx={{ fontSize: 18, color: '#4d7866', fontWeight: 600 }}>
-                Sec. 19
+                {activeStage.date}
               </Typography>
             </Box>
 
@@ -157,7 +115,7 @@ function Workflow() {
                 fontWeight: 800,
               }}
             >
-              In Progress
+                {activeStage.activeLabel || (activeStage.status === 'completed' ? 'Completed' : 'Pending')}
             </Box>
           </Stack>
         </Box>
