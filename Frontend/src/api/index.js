@@ -1,14 +1,12 @@
 const apiBaseUrl = process.env.REACT_APP_API_URL || '/api';
-const tokenStorageKey = 'bhumiSetuToken';
-const userStorageKey = 'bhumiSetuUser';
+let session = { token: null, user: null };
 
 function getToken() {
-  return localStorage.getItem(tokenStorageKey);
+  return session.token;
 }
 
 export function clearSession() {
-  localStorage.removeItem(tokenStorageKey);
-  localStorage.removeItem(userStorageKey);
+  session = { token: null, user: null };
 }
 
 async function request(path, options = {}) {
@@ -42,8 +40,7 @@ async function request(path, options = {}) {
 }
 
 function saveSession(data) {
-  localStorage.setItem(tokenStorageKey, data.token);
-  localStorage.setItem(userStorageKey, JSON.stringify(data.user));
+  session = { token: data.token, user: data.user };
   return data;
 }
 
@@ -52,14 +49,7 @@ export function hasSession() {
 }
 
 export function getCurrentUser() {
-  const storedUser = localStorage.getItem(userStorageKey);
-  if (!storedUser) return null;
-
-  try {
-    return JSON.parse(storedUser);
-  } catch (error) {
-    return null;
-  }
+  return session.user;
 }
 
 export function authenticate(mode, credentials) {
