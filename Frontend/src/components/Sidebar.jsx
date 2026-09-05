@@ -5,7 +5,6 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 
@@ -15,7 +14,6 @@ export const menuItems = [
   { label: 'Statutory Workflow', path: '/statutory-workflow', icon: DescriptionOutlinedIcon },
   { label: 'Compensation Calc', path: '/compensation-calc', icon: CalculateOutlinedIcon },
   { label: 'Documents', path: '/documents', icon: FolderOpenOutlinedIcon },
-  { label: 'Landowner Portal', path: '/landowner-portal', icon: PersonOutlineOutlinedIcon },
   { label: 'Smart Alerts', path: '/smart-alerts', icon: NotificationsNoneOutlinedIcon, hasDot: true },
   { label: 'AI Decision Support', path: '/ai-decision-support', icon: AutoAwesomeOutlinedIcon },
 ];

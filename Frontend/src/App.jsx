@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import Dashboard from './components/Dashboard';
@@ -12,9 +12,32 @@ import CompensationCalc from './components/CompensationCalc';
 import Documents from './components/Documents';
 import Alerts from './components/Alerts';
 import DecisionSupport from './components/DecisionSupport';
+import Auth from './components/Auth';
+import NewProjectDialog from './components/NewProjectDialog';
+import useProjects from './hooks/useProjects';
+
+function normalizeProject(project) {
+  return {
+    ...project,
+    id: project.id || project.documentId,
+    name: project.name || project.title,
+  };
+}
 
 function App() {
   const [selectedProject, setSelectedProject] = useState(null);
+  const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
+  const { projects: projectList, addProject } = useProjects(projects);
+  const location = useLocation();
+
+  if (location.pathname === '/login' || location.pathname === '/register') {
+    return (
+      <Routes>
+        <Route path="/login" element={<Auth />} />
+        <Route path="/register" element={<Auth />} />
+      </Routes>
+    );
+  }
 
   return (
     <Box
@@ -28,20 +51,26 @@ function App() {
       <Sidebar selectedProject={selectedProject} />
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        <Topbar />
+        <Topbar onNewProject={() => setIsNewProjectOpen(true)} />
+
+        <NewProjectDialog
+          open={isNewProjectOpen}
+          onClose={() => setIsNewProjectOpen(false)}
+          onCreated={addProject}
+        />
 
         <Box sx={{ flex: 1, p: 2.5, overflowY: 'auto' }}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route
               path="/dashboard"
-              element={<Dashboard selectedProject={selectedProject} onSelectProject={setSelectedProject} />}
+              element={<Dashboard projects={projectList.map(normalizeProject)} selectedProject={selectedProject} onSelectProject={setSelectedProject} />}
             />
             <Route
               path="/projects"
               element={(
                 <ProjectList
-                  projects={projects}
+                  projects={projectList.map(normalizeProject)}
                   selectedProject={selectedProject}
                   onSelect={setSelectedProject}
                 />

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Box, FormControl, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
-import { useProjectDetail } from '../hooks/projectdetail';
+import { Box, Button, FormControl, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { areAllDocumentsVerified, isLandAcquired, useProjectDetail } from '../hooks/projectdetail';
 
 const multiplierMap = {
   Urban: 1,
@@ -22,12 +22,18 @@ function CompensationCalc({ projectId }) {
   const [marketValue, setMarketValue] = useState(project.compensation.marketValue);
   const [multiplier, setMultiplier] = useState(project.compensation.multiplier);
   const [landUse, setLandUse] = useState(project.compensation.landUse);
+  const [paymentStatuses, setPaymentStatuses] = useState(() => (
+    Object.fromEntries(project.compensation.payments.map((payment) => [payment.name, payment.status]))
+  ));
 
   useEffect(() => {
     setLandArea(project.compensation.landArea);
     setMarketValue(project.compensation.marketValue);
     setMultiplier(project.compensation.multiplier);
     setLandUse(project.compensation.landUse);
+    setPaymentStatuses(Object.fromEntries(
+      project.compensation.payments.map((payment) => [payment.name, payment.status]),
+    ));
   }, [project]);
 
   const calculations = useMemo(() => {
@@ -57,6 +63,13 @@ function CompensationCalc({ projectId }) {
     Pending: '#a76a17',
     Processing: '#2d6fbe',
   };
+
+  const paymentReady = areAllDocumentsVerified(project) && isLandAcquired(project);
+
+  function payLandowner(name) {
+    if (!paymentReady) return;
+    setPaymentStatuses((current) => ({ ...current, [name]: 'Paid' }));
+  }
 
   return (
     <Box
@@ -207,7 +220,10 @@ function CompensationCalc({ projectId }) {
           </Typography>
 
           <Stack spacing={1.2}>
-            {project.compensation.payments.map((p) => (
+            {project.compensation.payments.map((p) => {
+              const paymentStatus = paymentStatuses[p.name] || p.status;
+
+              return (
               <Box
                 key={p.name}
                 sx={{
@@ -226,22 +242,43 @@ function CompensationCalc({ projectId }) {
                   <Typography sx={{ fontSize: 12, color: '#4d7866' }}>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(p.amount)}</Typography>
                 </Box>
 
-                <Box
-                  sx={{
-                    bgcolor: statusColor[p.status],
-                    color: statusTextColor[p.status],
-                    borderRadius: 1.5,
-                    px: 1.1,
-                    py: 0.45,
-                    fontSize: 12,
-                    fontWeight: 800,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {p.status}
-                </Box>
+                <Stack direction="row" spacing={0.8} alignItems="center">
+                  <Box
+                    sx={{
+                      bgcolor: statusColor[paymentStatus],
+                      color: statusTextColor[paymentStatus],
+                      borderRadius: 1.5,
+                      px: 1.1,
+                      py: 0.45,
+                      fontSize: 12,
+                      fontWeight: 800,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {paymentStatus}
+                  </Box>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    disabled={!paymentReady || paymentStatus === 'Paid'}
+                    onClick={() => payLandowner(p.name)}
+                    title={paymentReady ? 'Pay this landowner' : 'All documents must be verified and land must be acquired'}
+                    sx={{
+                      minWidth: 48,
+                      px: 1,
+                      py: 0.45,
+                      textTransform: 'none',
+                      fontSize: 12,
+                      fontWeight: 800,
+                      opacity: paymentReady && paymentStatus !== 'Paid' ? 1 : 0.45,
+                    }}
+                  >
+                    Pay
+                  </Button>
+                </Stack>
               </Box>
-            ))}
+              );
+            })}
           </Stack>
         </Box>
       </Stack>

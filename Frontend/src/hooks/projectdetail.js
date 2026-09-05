@@ -86,11 +86,39 @@ export function isProjectCompleted(project) {
     && project.documents.every((document) => document.status === 'Verified');
 }
 
-export const projectDetails = projectRecords.map((project) => ({
-  ...project,
-  status: isProjectCompleted(project) ? 'completed' : 'pending',
-  progress: getProjectProgress(project),
-}));
+export function areAllLandownersPaid(project) {
+  const payments = project.compensation?.payments || [];
+  return payments.length > 0 && payments.every((payment) => payment.status === 'Paid');
+}
+
+export function areAllDocumentsVerified(project) {
+  const documents = project.documents || [];
+  return documents.length > 0 && documents.every((document) => document.status === 'Verified');
+}
+
+export function isLandAcquired(project) {
+  if (project.landStatus === 'acquired' || project.acquisitionStatus === 'acquired') return true;
+
+  const preCompensationStages = (project.stages || []).filter((stage) => stage.title !== 'Compensation');
+  return preCompensationStages.length > 0
+    && preCompensationStages.every((stage) => stage.status === 'completed');
+}
+
+export const projectDetails = projectRecords.map((project) => {
+  const compensationPaid = areAllLandownersPaid(project);
+  const stages = project.stages.map((stage) => (
+    stage.title === 'Compensation'
+      ? { ...stage, status: compensationPaid ? 'completed' : 'pending' }
+      : stage
+  ));
+  const normalizedProject = { ...project, stages };
+
+  return {
+    ...normalizedProject,
+    status: isProjectCompleted(normalizedProject) ? 'completed' : 'pending',
+    progress: getProjectProgress(normalizedProject),
+  };
+});
 
 export function useProjectDetail(projectId) {
   return useMemo(

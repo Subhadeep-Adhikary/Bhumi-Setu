@@ -3,7 +3,7 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import { useLocation } from 'react-router-dom';
 import { menuItems } from './Sidebar';
 
-function Topbar() {
+function Topbar({ onNewProject }) {
   const location = useLocation();
   const activeMenuItem = menuItems.find(
     ({ path }) => location.pathname === path || (path === '/dashboard' && location.pathname === '/')
@@ -85,6 +85,7 @@ function Topbar() {
 
           <Button
             variant="contained"
+            onClick={onNewProject}
             sx={{
               bgcolor: '#16633d',
               background: 'linear-gradient(180deg, #219f66 0%, #16633d 100%)',

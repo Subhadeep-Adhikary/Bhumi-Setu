@@ -46,7 +46,8 @@ const ProgressBar = ({ value, gradient }) => (
   </Box>
 );
 
-export default function Dashboard({ selectedProject, onSelectProject }) {
+export default function Dashboard({ selectedProject, onSelectProject, projects: projectList = projects }) {
+  const projects = projectList;
   const { total, completed, pending } = getProjectStats(projects);
 
   return (
