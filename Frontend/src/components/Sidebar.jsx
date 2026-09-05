@@ -7,6 +7,7 @@ import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
+import { getCurrentUser } from '../api';
 
 export const menuItems = [
   { label: 'Dashboard', path: '/dashboard', icon: DashboardIcon },
@@ -21,6 +22,9 @@ export const menuItems = [
 function Sidebar({ selectedProject }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const user = getCurrentUser();
+  const username = user?.username || 'User';
+  const initials = username.slice(0, 2).toUpperCase();
 
   const workflowPaths = ['/documents', '/statutory-workflow', '/compensation-calc'];
 
@@ -207,14 +211,14 @@ function Sidebar({ selectedProject }) {
                 border: '2px solid #fff',
               }}
             >
-              AK
+              {initials}
             </Avatar>
             <Box>
               <Typography sx={{ fontSize: 28, fontWeight: 700, lineHeight: 1.1, color: '#163a28' }}>
-                Ankit Kumar
+                {username}
               </Typography>
               <Typography sx={{ fontSize: 20, color: '#5a7a66', letterSpacing: '-0.01em', mt: 0.2 }}>
-                District Collector - MP
+                Land Acquisition Officer
               </Typography>
             </Box>
           </Box>

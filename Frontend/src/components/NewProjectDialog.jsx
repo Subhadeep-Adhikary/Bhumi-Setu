@@ -1,23 +1,11 @@
 import { useState } from 'react';
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  MenuItem,
-  Stack,
-  TextField,
-} from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
 import { createProject, hasSession } from '../api';
 
 const initialForm = {
-  title: '',
+  projectName: '',
   description: '',
-  documentId: '',
-  status: 'pending',
-  compensation: '',
+  parcelId: '',
 };
 
 export default function NewProjectDialog({ open, onClose, onCreated }) {
@@ -46,8 +34,8 @@ export default function NewProjectDialog({ open, onClose, onCreated }) {
 
     setSaving(true);
     try {
-      const data = await createProject(form);
-      onCreated(data);
+      const project = await createProject(form);
+      onCreated(project);
       closeDialog();
     } catch (requestError) {
       setError(requestError.message || 'Unable to reach the server');
@@ -62,32 +50,17 @@ export default function NewProjectDialog({ open, onClose, onCreated }) {
       <DialogContent>
         <Stack component="form" id="new-project-form" onSubmit={handleSubmit} spacing={2.2} sx={{ pt: 1 }}>
           {error && <Alert severity="error">{error}</Alert>}
-          <TextField label="Project title" name="title" value={form.title} onChange={updateField} required autoFocus />
+          <TextField label="Project name" name="projectName" value={form.projectName} onChange={updateField} required autoFocus />
           <TextField
             label="Description"
             name="description"
             value={form.description}
             onChange={updateField}
+            required
             multiline
             minRows={3}
           />
-          <TextField label="Document ID" name="documentId" value={form.documentId} onChange={updateField} required />
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField select label="Status" name="status" value={form.status} onChange={updateField} fullWidth>
-              <MenuItem value="pending">Pending</MenuItem>
-              <MenuItem value="in-progress">In progress</MenuItem>
-              <MenuItem value="completed">Completed</MenuItem>
-            </TextField>
-            <TextField
-              label="Compensation"
-              name="compensation"
-              type="number"
-              value={form.compensation}
-              onChange={updateField}
-              inputProps={{ min: 0, step: 0.01 }}
-              fullWidth
-            />
-          </Stack>
+          <TextField label="Land parcel ID" name="parcelId" value={form.parcelId} onChange={updateField} required />
         </Stack>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2.5 }}>

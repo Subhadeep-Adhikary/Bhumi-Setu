@@ -1,8 +1,9 @@
 import { Box, Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { useProjectDetail } from '../hooks/projectdetail';
 
-function Documents({ projectId }) {
-  const project = useProjectDetail(projectId);
+function Documents({ projectId, projects }) {
+  const project = useProjectDetail(projectId, projects);
+  if (!project) return <Typography sx={{ p: 4, color: '#4d7866' }}>No project selected</Typography>;
   const documents = project.documents;
   return (
     <Box

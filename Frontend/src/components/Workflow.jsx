@@ -1,8 +1,9 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useProjectDetail } from '../hooks/projectdetail';
 
-function Workflow({ projectId }) {
-  const project = useProjectDetail(projectId);
+function Workflow({ projectId, projects }) {
+  const project = useProjectDetail(projectId, projects);
+  if (!project) return <Typography sx={{ p: 4, color: '#4d7866' }}>No project selected</Typography>;
   const activeStage = project.stages.find((stage) => stage.status === 'active') || project.stages[project.stages.length - 1];
 
   return (

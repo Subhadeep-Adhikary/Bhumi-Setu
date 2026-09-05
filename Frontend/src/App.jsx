@@ -4,7 +4,6 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import Dashboard from './components/Dashboard';
-import { projects } from './components/Dashboard';
 import ProjectList from './components/ProjectList';
 import GISMap from './components/GISMap';
 import Workflow from './components/Workflow';
@@ -20,7 +19,7 @@ import useProjects from './hooks/useProjects';
 function normalizeProject(project) {
   return {
     ...project,
-    id: project.id || project.documentId,
+    id: project.id || project.parcelId,
     name: project.name || project.title,
   };
 }
@@ -28,7 +27,7 @@ function normalizeProject(project) {
 function App() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
-  const { projects: projectList, addProject } = useProjects(projects);
+  const { projects: projectList, addProject } = useProjects();
   const location = useLocation();
 
   if (location.pathname === '/login' || location.pathname === '/register') {
@@ -82,9 +81,9 @@ function App() {
               )}
             />
             <Route path="/gis-map" element={<GISMap />} />
-            <Route path="/statutory-workflow" element={<Workflow projectId={selectedProject?.id} />} />
-            <Route path="/compensation-calc" element={<CompensationCalc projectId={selectedProject?.id} />} />
-            <Route path="/documents" element={<Documents projectId={selectedProject?.id} />} />
+            <Route path="/statutory-workflow" element={<Workflow projectId={selectedProject?.id} projects={projectList} />} />
+            <Route path="/compensation-calc" element={<CompensationCalc projectId={selectedProject?.id} projects={projectList} />} />
+            <Route path="/documents" element={<Documents projectId={selectedProject?.id} projects={projectList} />} />
             <Route path="/smart-alerts" element={<Alerts />} />
             <Route path="/ai-decision-support" element={<DecisionSupport />} />
           </Routes>

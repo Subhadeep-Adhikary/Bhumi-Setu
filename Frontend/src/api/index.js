@@ -1,4 +1,4 @@
-const apiBaseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const apiBaseUrl = process.env.REACT_APP_API_URL || '/api';
 const tokenStorageKey = 'bhumiSetuToken';
 const userStorageKey = 'bhumiSetuUser';
 
@@ -17,7 +17,14 @@ async function request(path, options = {}) {
     ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
     ...options.headers,
   };
-  const response = await fetch(`${apiBaseUrl}${path}`, { ...options, headers });
+  let response;
+  try {
+    response = await fetch(`${apiBaseUrl}${path}`, { ...options, headers });
+  } catch (error) {
+    throw new Error(
+      `Cannot connect to the backend at ${apiBaseUrl}. Start MongoDB and the backend server, or set REACT_APP_API_URL correctly.`,
+    );
+  }
   const data = await response.json().catch(() => ({}));
 
   if (response.status === 401) {
@@ -44,6 +51,17 @@ export function hasSession() {
   return Boolean(getToken());
 }
 
+export function getCurrentUser() {
+  const storedUser = localStorage.getItem(userStorageKey);
+  if (!storedUser) return null;
+
+  try {
+    return JSON.parse(storedUser);
+  } catch (error) {
+    return null;
+  }
+}
+
 export function authenticate(mode, credentials) {
   return request(`/auth/${mode}`, {
     method: 'POST',
@@ -58,9 +76,6 @@ export function getProjects() {
 export function createProject(project) {
   return request('/projects', {
     method: 'POST',
-    body: JSON.stringify({
-      ...project,
-      compensation: Number(project.compensation || 0),
-    }),
+    body: JSON.stringify(project),
   });
 }

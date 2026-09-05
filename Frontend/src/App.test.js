@@ -1,9 +1,14 @@
 import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 
-test('renders the dashboard view', () => {
-  render(<App />);
+test('redirects unauthenticated users to login', () => {
+  localStorage.removeItem('bhumiSetuToken');
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>,
+  );
 
-  expect(screen.getByText(/National Dashboard/i)).toBeInTheDocument();
-  expect(screen.getByText(/Polavaram Irrigation Canal Network/i)).toBeInTheDocument();
+  expect(screen.getByText(/Welcome back/i)).toBeInTheDocument();
 });

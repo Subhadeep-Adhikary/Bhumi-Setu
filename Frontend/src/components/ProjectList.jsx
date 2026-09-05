@@ -26,6 +26,11 @@ export default function ProjectList({ projects = [], selectedProject, onSelect }
       </Box>
       <Box sx={{ borderRadius: '22px', border: '1px solid #dfead8', bgcolor: '#f8fcf5', p: 2, boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 8px 20px rgba(22,99,61,0.06)' }}>
         <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: '1fr' }} role="list">
+          {!projects.length && (
+            <Box sx={{ py: 7, textAlign: 'center', color: '#6a8a7c', fontWeight: 700 }}>
+              No projects added yet
+            </Box>
+          )}
           {projects.map((project) => {
             const selected = isSelected(project);
             const progress = Math.min(100, Math.max(0, getProjectProgress(project)));

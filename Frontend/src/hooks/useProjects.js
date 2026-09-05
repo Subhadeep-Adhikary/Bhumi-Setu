@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { createProject, getProjects, hasSession } from '../api';
 
-export default function useProjects(initialProjects = []) {
-  const [projects, setProjects] = useState(initialProjects);
+export default function useProjects() {
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 

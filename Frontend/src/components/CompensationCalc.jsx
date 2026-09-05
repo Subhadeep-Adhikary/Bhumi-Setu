@@ -5,7 +5,6 @@ import { areAllDocumentsVerified, isLandAcquired, useProjectDetail } from '../ho
 const multiplierMap = {
   Urban: 1,
   'Rural (2x)': 2,
-  'Remote (3x)': 3,
 };
 
 const landUseOptions = [
@@ -16,25 +15,30 @@ const landUseOptions = [
   'Industrial',
 ];
 
-function CompensationCalc({ projectId }) {
-  const project = useProjectDetail(projectId);
-  const [landArea, setLandArea] = useState(project.compensation.landArea);
-  const [marketValue, setMarketValue] = useState(project.compensation.marketValue);
-  const [multiplier, setMultiplier] = useState(project.compensation.multiplier);
-  const [landUse, setLandUse] = useState(project.compensation.landUse);
+function CompensationCalc({ projectId, projects }) {
+  const project = useProjectDetail(projectId, projects);
+  const projectData = useMemo(() => project || {
+    compensation: { landArea: '0', marketValue: '0', multiplier: 'Urban', landUse: 'Agricultural — Irrigated', solatiumRate: 0, payments: [] },
+    documents: [],
+    stages: [],
+  }, [project]);
+  const [landArea, setLandArea] = useState(projectData.compensation.landArea);
+  const [marketValue, setMarketValue] = useState(projectData.compensation.marketValue);
+  const [multiplier, setMultiplier] = useState(projectData.compensation.multiplier);
+  const [landUse, setLandUse] = useState(projectData.compensation.landUse);
   const [paymentStatuses, setPaymentStatuses] = useState(() => (
-    Object.fromEntries(project.compensation.payments.map((payment) => [payment.name, payment.status]))
+    Object.fromEntries(projectData.compensation.payments.map((payment) => [payment.name, payment.status]))
   ));
 
   useEffect(() => {
-    setLandArea(project.compensation.landArea);
-    setMarketValue(project.compensation.marketValue);
-    setMultiplier(project.compensation.multiplier);
-    setLandUse(project.compensation.landUse);
+    setLandArea(projectData.compensation.landArea);
+    setMarketValue(projectData.compensation.marketValue);
+    setMultiplier(projectData.compensation.multiplier);
+    setLandUse(projectData.compensation.landUse);
     setPaymentStatuses(Object.fromEntries(
-      project.compensation.payments.map((payment) => [payment.name, payment.status]),
+      projectData.compensation.payments.map((payment) => [payment.name, payment.status]),
     ));
-  }, [project]);
+  }, [projectData]);
 
   const calculations = useMemo(() => {
     const area = Number(landArea) || 0;
@@ -42,7 +46,7 @@ function CompensationCalc({ projectId }) {
     const multiplierFactor = multiplierMap[multiplier] || 1;
 
     const baseMarketValue = area * baseRate * multiplierFactor;
-    const solatium = baseMarketValue * project.compensation.solatiumRate;
+    const solatium = baseMarketValue * projectData.compensation.solatiumRate;
     const totalComp = baseMarketValue + solatium;
 
     return {
@@ -50,7 +54,7 @@ function CompensationCalc({ projectId }) {
       solatium,
       totalComp,
     };
-  }, [landArea, marketValue, multiplier, project.compensation.solatiumRate]);
+  }, [landArea, marketValue, multiplier, projectData.compensation.solatiumRate]);
 
   const statusColor = {
     Paid: '#dfece7',
@@ -70,6 +74,8 @@ function CompensationCalc({ projectId }) {
     if (!paymentReady) return;
     setPaymentStatuses((current) => ({ ...current, [name]: 'Paid' }));
   }
+
+  if (!project) return <Typography sx={{ p: 4, color: '#4d7866' }}>No project selected</Typography>;
 
   return (
     <Box
@@ -157,7 +163,6 @@ function CompensationCalc({ projectId }) {
             >
               <MenuItem value="Urban">Urban</MenuItem>
               <MenuItem value="Rural (2x)">Rural (2x)</MenuItem>
-              <MenuItem value="Remote (3x)">Remote (3x)</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -220,7 +225,7 @@ function CompensationCalc({ projectId }) {
           </Typography>
 
           <Stack spacing={1.2}>
-            {project.compensation.payments.map((p) => {
+            {projectData.compensation.payments.map((p) => {
               const paymentStatus = paymentStatuses[p.name] || p.status;
 
               return (
