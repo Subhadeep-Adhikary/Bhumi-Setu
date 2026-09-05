@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
+import { getProjectProgress } from '../hooks/projectdetail';
 
 const getProjectKey = (project) => project.id || project.name;
-const getProjectProgress = (project) => project.progress ?? (project.status === 'completed' ? 100 : 23);
 const getProjectButtonId = (project) => `project-${String(getProjectKey(project)).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
 export default function ProjectList({ projects = [], selectedProject, onSelect }) {

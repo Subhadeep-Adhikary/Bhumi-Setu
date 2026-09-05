@@ -48,7 +48,7 @@ const projectSchema = new mongoose.Schema(
     district: { type: String, required: true },
     status: {
       type: String,
-      enum: ['pending', 'in-progress', 'completed', 'compensated'],
+      enum: ['pending', 'completed'],
       default: 'pending',
     },
     progress: { type: Number, default: 0, min: 0, max: 100 },

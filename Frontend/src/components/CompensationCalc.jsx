@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Box, Button, FormControl, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
-import { areAllDocumentsVerified, isLandAcquired, useProjectDetail } from '../hooks/projectdetail';
+import { compensateProject } from '../api';
+import { areAllDocumentsVerified, useProjectDetail } from '../hooks/projectdetail';
 
 const multiplierMap = {
   Urban: 1,
@@ -15,7 +16,7 @@ const landUseOptions = [
   'Industrial',
 ];
 
-function CompensationCalc({ projectId, projects }) {
+function CompensationCalc({ projectId, projects, onUpdated }) {
   const project = useProjectDetail(projectId, projects);
   const projectData = useMemo(() => project || {
     compensation: { landArea: '0', marketValue: '0', multiplier: 'Urban', landUse: 'Agricultural — Irrigated', solatiumRate: 0, payments: [] },
@@ -26,6 +27,7 @@ function CompensationCalc({ projectId, projects }) {
   const [marketValue, setMarketValue] = useState(projectData.compensation.marketValue);
   const [multiplier, setMultiplier] = useState(projectData.compensation.multiplier);
   const [landUse, setLandUse] = useState(projectData.compensation.landUse);
+  const [paying, setPaying] = useState('');
   const [paymentStatuses, setPaymentStatuses] = useState(() => (
     Object.fromEntries(projectData.compensation.payments.map((payment) => [payment.name, payment.status]))
   ));
@@ -68,11 +70,23 @@ function CompensationCalc({ projectId, projects }) {
     Processing: '#2d6fbe',
   };
 
-  const paymentReady = areAllDocumentsVerified(project) && isLandAcquired(project);
+  const paymentReady = areAllDocumentsVerified(project) && calculations.totalComp > 0;
 
-  function payLandowner(name) {
+  async function payLandowner(name) {
     if (!paymentReady) return;
-    setPaymentStatuses((current) => ({ ...current, [name]: 'Paid' }));
+    setPaying(name);
+    try {
+      const updatedProject = await compensateProject(project._id || project.id, {
+        area: multiplier === 'Rural (2x)' ? 'rural' : 'urban',
+        realPrice: marketValue,
+      });
+      setPaymentStatuses(Object.fromEntries(
+        updatedProject.compensation.payments.map((payment) => [payment.name, payment.status]),
+      ));
+      onUpdated(updatedProject);
+    } finally {
+      setPaying('');
+    }
   }
 
   if (!project) return <Typography sx={{ p: 4, color: '#4d7866' }}>No project selected</Typography>;
@@ -265,9 +279,9 @@ function CompensationCalc({ projectId, projects }) {
                   <Button
                     size="small"
                     variant="contained"
-                    disabled={!paymentReady || paymentStatus === 'Paid'}
+                    disabled={!paymentReady || paymentStatus === 'Paid' || Boolean(paying)}
                     onClick={() => payLandowner(p.name)}
-                    title={paymentReady ? 'Pay this landowner' : 'All documents must be verified and land must be acquired'}
+                    title={paymentReady ? 'Pay this landowner' : 'Verify documents and calculate a valid compensation amount first'}
                     sx={{
                       minWidth: 48,
                       px: 1,
@@ -275,10 +289,10 @@ function CompensationCalc({ projectId, projects }) {
                       textTransform: 'none',
                       fontSize: 12,
                       fontWeight: 800,
-                      opacity: paymentReady && paymentStatus !== 'Paid' ? 1 : 0.45,
+                      opacity: paymentReady && paymentStatus !== 'Paid' && !paying ? 1 : 0.45,
                     }}
                   >
-                    Pay
+                    {paying === p.name ? 'Paying...' : 'Pay'}
                   </Button>
                 </Stack>
               </Box>

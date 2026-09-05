@@ -27,7 +27,7 @@ function normalizeProject(project) {
 function App() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
-  const { projects: projectList, addProject } = useProjects();
+  const { projects: projectList, addProject, updateProject } = useProjects();
   const location = useLocation();
 
   if (location.pathname === '/login' || location.pathname === '/register') {
@@ -82,7 +82,7 @@ function App() {
             />
             <Route path="/gis-map" element={<GISMap />} />
             <Route path="/statutory-workflow" element={<Workflow projectId={selectedProject?.id} projects={projectList} />} />
-            <Route path="/compensation-calc" element={<CompensationCalc projectId={selectedProject?.id} projects={projectList} />} />
+            <Route path="/compensation-calc" element={<CompensationCalc projectId={selectedProject?.id} projects={projectList} onUpdated={updateProject} />} />
             <Route path="/documents" element={<Documents projectId={selectedProject?.id} projects={projectList} />} />
             <Route path="/smart-alerts" element={<Alerts />} />
             <Route path="/ai-decision-support" element={<DecisionSupport />} />

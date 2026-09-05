@@ -4,7 +4,15 @@ import { useProjectDetail } from '../hooks/projectdetail';
 function Workflow({ projectId, projects }) {
   const project = useProjectDetail(projectId, projects);
   if (!project) return <Typography sx={{ p: 4, color: '#4d7866' }}>No project selected</Typography>;
-  const activeStage = project.stages.find((stage) => stage.status === 'active') || project.stages[project.stages.length - 1];
+  const documentsVerified = project.documents?.length > 0
+    && project.documents.every((document) => document.status === 'Verified');
+  const stages = project.stages.map((stage, index) => {
+    if (index === 1 && project.parcelId) return { ...stage, status: 'completed', activeLabel: undefined };
+    if (index === 2 && documentsVerified) return { ...stage, status: 'completed', activeLabel: undefined };
+    if (index === 3 && project.parcelId && documentsVerified) return { ...stage, status: 'active', activeLabel: 'In Progress' };
+    return stage;
+  });
+  const activeStage = stages.find((stage) => stage.status === 'active') || stages[stages.length - 1];
 
   return (
     <Box
@@ -38,7 +46,7 @@ function Workflow({ projectId, projects }) {
       </Stack>
 
       <Stack direction="row" alignItems="flex-start" spacing={1.8} sx={{ mb: 4 }}>
-        {project.stages.map((stage, index) => {
+        {stages.map((stage, index) => {
           const isActive = stage.status === 'active';
           const isCompleted = stage.status === 'completed';
 
@@ -64,7 +72,7 @@ function Workflow({ projectId, projects }) {
               >
                 {isCompleted ? '✓' : stage.short}
 
-                {index < project.stages.length - 1 && (
+                {index < stages.length - 1 && (
                   <Box
                     sx={{
                       position: 'absolute',

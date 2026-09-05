@@ -5,16 +5,17 @@ export default function useProjects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const authenticated = hasSession();
 
   useEffect(() => {
-    if (!hasSession()) return;
+    if (!authenticated) return;
 
     setLoading(true);
     getProjects()
       .then(setProjects)
       .catch((requestError) => setError(requestError.message || 'Unable to load projects'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [authenticated]);
 
   async function addProject(project) {
     const createdProject = await createProject(project);
@@ -22,5 +23,11 @@ export default function useProjects() {
     return createdProject;
   }
 
-  return { projects, addProject, loading, error };
+  function updateProject(updatedProject) {
+    setProjects((currentProjects) => currentProjects.map((project) => (
+      project.id === updatedProject.id ? updatedProject : project
+    )));
+  }
+
+  return { projects, addProject, updateProject, loading, error };
 }

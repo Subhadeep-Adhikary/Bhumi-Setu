@@ -69,3 +69,10 @@ export function createProject(project) {
     body: JSON.stringify(project),
   });
 }
+
+export function compensateProject(projectId, payment) {
+  return request(`/projects/compensate/${projectId}`, {
+    method: 'POST',
+    body: JSON.stringify(payment),
+  }).then((data) => data.project);
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
-import { createProject, hasSession } from '../api';
+import { hasSession } from '../api';
 
 const initialForm = {
   projectName: '',
@@ -34,8 +34,7 @@ export default function NewProjectDialog({ open, onClose, onCreated }) {
 
     setSaving(true);
     try {
-      const project = await createProject(form);
-      onCreated(project);
+      await onCreated(form);
       closeDialog();
     } catch (requestError) {
       setError(requestError.message || 'Unable to reach the server');
