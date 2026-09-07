@@ -1,133 +1,1252 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { useMemo, useState } from "react";
+import {
+  Box,
+  Stack,
+  Typography,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 
-const parcelMatrix = [
-  ['acquired', 'acquired', 'pin-green', 'acquired', 'pin-green', 'light', 'light', 'acquired', 'acquired', 'acquired'],
-  ['dark', 'acquired', 'acquired', 'pin', 'light', 'striped', 'striped', 'acquired', 'acquired', 'acquired'],
-  ['acquired', 'green-light', 'pin-green', 'light', 'pin-light', 'striped-light', 'acquired', 'acquired', 'acquired', null],
-  ['light-green', 'pin-green', 'light', 'striped', 'white', 'white', 'acquired', null, null, null],
-  ['pin-light', 'light-light', 'striped-light', 'white', 'acquired', 'acquired', null, null, null, null],
-  ['light-light', 'white', 'white', 'acquired', 'acquired', null, null, null, null, null],
-  ['striped-light', 'acquired', 'acquired', 'acquired', null, null, null, null, null, null],
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Circle,
+  Polygon,
+  useMap,
+} from "react-leaflet";
+
+import L from "leaflet";
+
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
+import MyLocationRoundedIcon from "@mui/icons-material/MyLocationRounded";
+import FullscreenRoundedIcon from "@mui/icons-material/FullscreenRounded";
+import LayersOutlinedIcon from "@mui/icons-material/LayersOutlined";
+import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+
+import "leaflet/dist/leaflet.css";
+
+/* ============================================================
+   INDIA MAP SETTINGS
+============================================================ */
+
+const INDIA_CENTER = [22.5937, 78.9629];
+
+const INDIA_BOUNDS = [
+  [6.5, 68.0],
+  [35.8, 97.5],
 ];
 
-const parcelStyles = {
-  acquired: { bg: '#0d7a4a', shadow: '0 6px 12px rgba(13,122,74,0.4), inset 0 1px 0 rgba(255,255,255,0.3)' },
-  dark: { bg: '#064e2e', shadow: '0 6px 12px rgba(6,78,46,0.5)' },
-  'green-light': { bg: '#5db85a', shadow: '0 6px 12px rgba(93,184,90,0.3)' },
-  light: { bg: '#4db88a', shadow: '0 6px 12px rgba(77,184,138,0.3)' },
-  'light-green': { bg: '#8ed14f', shadow: '0 6px 12px rgba(142,209,79,0.3)' },
-  'light-light': { bg: '#a8d5c2', shadow: '0 4px 8px rgba(0,0,0,0.08)' },
-  'striped-light': { bg: 'repeating-linear-gradient(45deg, #c8e8d8 0px, #c8e8d8 4px, #e2f1e8 4px, #e2f1e8 8px)', shadow: '0 4px 8px rgba(0,0,0,0.05)' },
-  striped: { bg: 'repeating-linear-gradient(45deg, #b8d8c8 0px, #b8d8c8 4px, #d8e8dc 4px, #d8e8dc 8px)', shadow: '0 4px 8px rgba(0,0,0,0.05)' },
-  white: { bg: '#ffffff', shadow: '0 4px 8px rgba(0,0,0,0.06), inset 0 0 0 1px #e0e0e0' },
-  'pin-green': { bg: '#6fbf73', hasPin: true },
-  'pin': { bg: '#2d9a5a', hasPin: true },
-  'pin-light': { bg: '#7ed3b2', hasPin: true },
+/* ============================================================
+   CUSTOM MARKER
+============================================================ */
+
+const createMarkerIcon = (color = "#17643f") => {
+  return L.divIcon({
+    className: "custom-map-marker",
+
+    html: `
+      <div
+        style="
+          width: 34px;
+          height: 34px;
+          border-radius: 50% 50% 50% 0;
+          background: ${color};
+          border: 3px solid white;
+          box-shadow: 0 5px 14px rgba(0,0,0,0.25);
+          transform: rotate(-45deg);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div
+          style="
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+          "
+        ></div>
+      </div>
+    `,
+
+    iconSize: [34, 34],
+    iconAnchor: [17, 34],
+    popupAnchor: [0, -32],
+  });
 };
 
-const ParcelBox = ({ type }) => {
-  if (!type) return <Box />;
-  const style = parcelStyles[type] || parcelStyles['white'];
+const greenMarker = createMarkerIcon("#17643f");
+const orangeMarker = createMarkerIcon("#d88932");
+const redMarker = createMarkerIcon("#c94b4b");
+
+/* ============================================================
+   MAP CONTROLS
+============================================================ */
+
+function MapControls() {
+  const map = useMap();
+
+  const zoomIn = () => {
+    map.zoomIn();
+  };
+
+  const zoomOut = () => {
+    map.zoomOut();
+  };
+
+  const resetIndia = () => {
+    map.flyTo(INDIA_CENTER, 5, {
+      duration: 0.8,
+    });
+  };
+
+  const fullscreen = () => {
+    const mapElement = map.getContainer();
+
+    if (!document.fullscreenElement) {
+      mapElement.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
+    }
+  };
+
   return (
-    <Box sx={{ width: '100%', aspectRatio: '1 / 1', borderRadius: '14px', bgcolor: style.hasPin? style.bg : undefined, background:!style.hasPin? style.bg : undefined, boxShadow: style.shadow, display: 'grid', placeItems: 'center', border: '1px solid rgba(255,255,255,0.6)' }}>
-      {style.hasPin && <Box sx={{ fontSize: 26, filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.2))' }}>📍</Box>}
+    <Box
+      sx={{
+        position: "absolute",
+        zIndex: 1000,
+
+        top: 18,
+        right: 18,
+
+        display: "flex",
+        flexDirection: "column",
+
+        bgcolor: "rgba(255,255,255,0.96)",
+
+        borderRadius: "12px",
+
+        border: "1px solid #dce7dc",
+
+        boxShadow:
+          "0 6px 20px rgba(31,74,61,0.12)",
+
+        overflow: "hidden",
+      }}
+    >
+      <Tooltip title="Zoom in" placement="left">
+        <IconButton
+          onClick={zoomIn}
+          sx={{
+            width: 42,
+            height: 42,
+
+            borderRadius: 0,
+
+            color: "#245b45",
+
+            "&:hover": {
+              bgcolor: "#edf7ee",
+            },
+          }}
+        >
+          <AddRoundedIcon />
+        </IconButton>
+      </Tooltip>
+
+      <Box
+        sx={{
+          height: "1px",
+          bgcolor: "#e5ebe5",
+        }}
+      />
+
+      <Tooltip title="Zoom out" placement="left">
+        <IconButton
+          onClick={zoomOut}
+          sx={{
+            width: 42,
+            height: 42,
+
+            borderRadius: 0,
+
+            color: "#245b45",
+
+            "&:hover": {
+              bgcolor: "#edf7ee",
+            },
+          }}
+        >
+          <RemoveRoundedIcon />
+        </IconButton>
+      </Tooltip>
+
+      <Box
+        sx={{
+          height: "1px",
+          bgcolor: "#e5ebe5",
+        }}
+      />
+
+      <Tooltip title="Show India" placement="left">
+        <IconButton
+          onClick={resetIndia}
+          sx={{
+            width: 42,
+            height: 42,
+
+            borderRadius: 0,
+
+            color: "#245b45",
+
+            "&:hover": {
+              bgcolor: "#edf7ee",
+            },
+          }}
+        >
+          <MyLocationRoundedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+
+      <Box
+        sx={{
+          height: "1px",
+          bgcolor: "#e5ebe5",
+        }}
+      />
+
+      <Tooltip title="Fullscreen" placement="left">
+        <IconButton
+          onClick={fullscreen}
+          sx={{
+            width: 42,
+            height: 42,
+
+            borderRadius: 0,
+
+            color: "#245b45",
+
+            "&:hover": {
+              bgcolor: "#edf7ee",
+            },
+          }}
+        >
+          <FullscreenRoundedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+    </Box>
+  );
+}
+
+/* ============================================================
+   STAT CARD
+============================================================ */
+
+const StatCard = ({
+  icon,
+  value,
+  label,
+  color,
+}) => {
+  return (
+    <Box
+      sx={{
+        position: "relative",
+
+        overflow: "hidden",
+
+        bgcolor: "#ffffff",
+
+        borderRadius: 3,
+
+        p: {
+          xs: 1.8,
+          sm: 2,
+          md: 2.2,
+        },
+
+        display: "flex",
+
+        alignItems: "center",
+
+        gap: 1.5,
+
+        border: "1px solid #e0eadc",
+
+        boxShadow:
+          "0 8px 24px rgba(31,74,61,0.06)",
+
+        transition:
+          "transform 180ms ease, box-shadow 180ms ease",
+
+        "&:hover": {
+          transform: "translateY(-2px)",
+
+          boxShadow:
+            "0 12px 28px rgba(31,74,61,0.10)",
+        },
+
+        "&::after": {
+          content: '""',
+
+          position: "absolute",
+
+          right: -25,
+          top: -25,
+
+          width: 80,
+          height: 80,
+
+          borderRadius: "50%",
+
+          bgcolor:
+            "rgba(35,143,99,0.035)",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          width: 45,
+          height: 45,
+
+          flexShrink: 0,
+
+          display: "grid",
+
+          placeItems: "center",
+
+          borderRadius: 2.5,
+
+          bgcolor: "#eef7ed",
+
+          fontSize: 21,
+        }}
+      >
+        {icon}
+      </Box>
+
+      <Box sx={{ minWidth: 0 }}>
+        <Typography
+          sx={{
+            fontSize: {
+              xs: 20,
+              sm: 22,
+              md: 24,
+            },
+
+            fontWeight: 900,
+
+            color:
+              color || "#1a3a2e",
+
+            lineHeight: 1.1,
+
+            letterSpacing: "-0.5px",
+          }}
+        >
+          {value}
+        </Typography>
+
+        <Typography
+          sx={{
+            mt: 0.4,
+
+            fontSize: {
+              xs: 11,
+              sm: 12,
+            },
+
+            fontWeight: 650,
+
+            color: "#668276",
+          }}
+        >
+          {label}
+        </Typography>
+      </Box>
     </Box>
   );
 };
 
+/* ============================================================
+   GIS MAP
+============================================================ */
+
 function GISMap() {
+  const [mapType, setMapType] = useState("street");
+
+  /*
+   * Sample project locations.
+   *
+   * Replace these coordinates with your actual
+   * project / acquisition data from the backend.
+   */
+  const projects = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "NH-44 Project",
+        district: "Narsinghpur",
+        state: "Madhya Pradesh",
+        position: [22.95, 79.19],
+        status: "Under Acquisition",
+      },
+      {
+        id: 2,
+        name: "NH-46 Expansion",
+        district: "Bhopal",
+        state: "Madhya Pradesh",
+        position: [23.2599, 77.4126],
+        status: "Proposed",
+      },
+      {
+        id: 3,
+        name: "Delhi–Mumbai Corridor",
+        district: "Vadodara",
+        state: "Gujarat",
+        position: [22.3072, 73.1812],
+        status: "Acquired",
+      },
+      {
+        id: 4,
+        name: "Eastern Corridor",
+        district: "Ranchi",
+        state: "Jharkhand",
+        position: [23.3441, 85.3096],
+        status: "Under Acquisition",
+      },
+    ],
+    []
+  );
+
+  /*
+   * Example corridor geometry.
+   *
+   * Replace this with your actual GeoJSON / GIS
+   * geometry from PostGIS.
+   */
+  const corridor = [
+    [24.2, 77.2],
+    [23.9, 77.8],
+    [23.5, 78.4],
+    [23.1, 79.0],
+    [22.8, 79.5],
+    [22.4, 80.0],
+  ];
+
+  const tileUrl =
+    mapType === "satellite"
+      ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
   return (
-    <Box sx={{ width: '100%', p: 0, boxSizing: 'border-box' }}>
-      <Box sx={{ width: '100%', display: 'flex', gap: 2.5, alignItems: 'flex-start' }}>
+    <Box
+      sx={{
+        width: "100%",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* =====================================================
+          MAIN GRID
+      ====================================================== */}
 
-        {/* LEFT MAP */}
-        <Box sx={{ flex: 1.6, bgcolor: '#f6f9f2', borderRadius: '26px', p: 3.5, boxShadow: '0 12px 36px rgba(0,0,0,0.08)', border: '1px solid rgba(255,255,255,0.8)', minHeight: 720 }}>
+      <Box
+        sx={{
+          width: "100%",
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2.5 }}>
-            <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#3a6a5a' }}>
-              India <span style={{ opacity: 0.5 }}> › </span> Madhya Pradesh <span style={{ opacity: 0.5 }}> › </span> Narsinghpur <span style={{ opacity: 0.5 }}> › </span> <span style={{ fontWeight: 900, color: '#0f2e22' }}>NH-44 Project</span> <span style={{ color: '#5a9a8a', marginLeft: 12, fontWeight: 700 }}>District</span>
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Box sx={{ px: 2, py: 1, bgcolor: '#eef4eb', borderRadius: 2.5, fontSize: 12, fontWeight: 700, color: '#2a5a45', textAlign: 'center', lineHeight: 1.2 }}>PostGIS ST_Buffer - ST_Intersects<br/><span style={{ color: '#5a8a6e', fontWeight: 500 }}>active</span></Box>
-              <Box sx={{ px: 2.5, py: 1, bgcolor: '#eef4eb', borderRadius: 2.5, fontSize: 13, fontWeight: 800, color: '#2a5a45', display: 'grid', placeItems: 'center' }}>Draw<br/>Corridor</Box>
-              <Box sx={{ px: 2.5, py: 1, bgcolor: '#eef4eb', borderRadius: 2.5, fontSize: 13, fontWeight: 800, color: '#2a5a45', display: 'grid', placeItems: 'center' }}>Upload<br/>KML</Box>
+          display: "grid",
+
+          gridTemplateColumns: {
+            xs: "1fr",
+
+            lg:
+              "minmax(0, 1.7fr) minmax(300px, 0.55fr)",
+          },
+
+          gap: {
+            xs: 2,
+            md: 2.5,
+          },
+
+          alignItems: "start",
+        }}
+      >
+        {/* =====================================================
+            LEFT — INDIA MAP
+        ====================================================== */}
+
+        <Box
+          sx={{
+            minWidth: 0,
+
+            bgcolor: "#f6f9f2",
+
+            borderRadius: {
+              xs: 3,
+              sm: 4,
+            },
+
+            p: {
+              xs: 1.5,
+              sm: 2.5,
+              md: 3,
+            },
+
+            border:
+              "1px solid #e1eadf",
+
+            boxShadow:
+              "0 14px 38px rgba(31,74,61,0.075)",
+
+            overflow: "hidden",
+          }}
+        >
+          {/* MAP HEADER */}
+
+          <Stack
+            direction={{
+              xs: "column",
+              md: "row",
+            }}
+            justifyContent="space-between"
+            alignItems={{
+              xs: "stretch",
+              md: "center",
+            }}
+            spacing={2}
+            sx={{ mb: 2 }}
+          >
+            <Box>
+              <Typography
+                sx={{
+                  fontSize: {
+                    xs: 20,
+                    sm: 23,
+                    md: 26,
+                  },
+
+                  fontWeight: 900,
+
+                  color: "#193c30",
+
+                  letterSpacing:
+                    "-0.025em",
+                }}
+              >
+                India Acquisition Map
+              </Typography>
+
+              <Typography
+                sx={{
+                  mt: 0.4,
+
+                  fontSize: {
+                    xs: 11,
+                    sm: 12,
+                  },
+
+                  color: "#789288",
+
+                  fontWeight: 600,
+                }}
+              >
+                Real-time land acquisition &
+                corridor monitoring
+              </Typography>
+            </Box>
+
+            {/* MAP MODE */}
+
+            <Box
+              sx={{
+                display: "flex",
+
+                alignItems: "center",
+
+                gap: 0.8,
+
+                alignSelf: {
+                  xs: "flex-start",
+                  md: "auto",
+                },
+              }}
+            >
+              <Box
+                onClick={() =>
+                  setMapType("street")
+                }
+                sx={{
+                  display: "flex",
+
+                  alignItems: "center",
+
+                  gap: 0.6,
+
+                  px: 1.2,
+                  py: 0.8,
+
+                  borderRadius: 2,
+
+                  bgcolor:
+                    mapType === "street"
+                      ? "#e4f2e6"
+                      : "#ffffff",
+
+                  border:
+                    "1px solid #dce8dc",
+
+                  color: "#2b654c",
+
+                  fontSize: 11,
+
+                  fontWeight: 800,
+
+                  cursor: "pointer",
+                }}
+              >
+                <MapOutlinedIcon
+                  sx={{ fontSize: 16 }}
+                />
+
+                Map
+              </Box>
+
+              <Box
+                onClick={() =>
+                  setMapType("satellite")
+                }
+                sx={{
+                  display: "flex",
+
+                  alignItems: "center",
+
+                  gap: 0.6,
+
+                  px: 1.2,
+                  py: 0.8,
+
+                  borderRadius: 2,
+
+                  bgcolor:
+                    mapType === "satellite"
+                      ? "#e4f2e6"
+                      : "#ffffff",
+
+                  border:
+                    "1px solid #dce8dc",
+
+                  color: "#2b654c",
+
+                  fontSize: 11,
+
+                  fontWeight: 800,
+
+                  cursor: "pointer",
+                }}
+              >
+                <LayersOutlinedIcon
+                  sx={{ fontSize: 16 }}
+                />
+
+                Satellite
+              </Box>
             </Box>
           </Stack>
 
-          <Typography sx={{ fontSize: 14, fontWeight: 800, color: '#1a3a2e', mb: 2.5 }}>Corridor Buffer: 500m</Typography>
+          {/* =================================================
+              MAP
+          ================================================== */}
 
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: 1.4, width: '100%' }}>
-            {parcelMatrix.flat().map((p, i) => <ParcelBox key={i} type={p} />)}
+          <Box
+            sx={{
+              position: "relative",
+
+              width: "100%",
+
+              height: {
+                xs: 430,
+                sm: 500,
+                md: 560,
+                lg: 600,
+              },
+
+              borderRadius: 3,
+
+              overflow: "hidden",
+
+              border:
+                "1px solid #d5e2d4",
+
+              boxShadow:
+                "inset 0 0 0 1px rgba(255,255,255,0.5)",
+            }}
+          >
+            <MapContainer
+              center={INDIA_CENTER}
+              zoom={5}
+              minZoom={4}
+              maxZoom={18}
+              maxBounds={INDIA_BOUNDS}
+              maxBoundsViscosity={0.7}
+              scrollWheelZoom={true}
+              doubleClickZoom={true}
+              dragging={true}
+              zoomControl={false}
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+                url={tileUrl}
+              />
+
+              {/* =================================================
+                  CORRIDOR
+              ================================================== */}
+
+              <Polygon
+                positions={corridor}
+                pathOptions={{
+                  color: "#17643f",
+                  weight: 5,
+                  opacity: 0.9,
+
+                  fillColor: "#55a875",
+                  fillOpacity: 0.16,
+                }}
+              />
+
+              {/* Corridor buffer */}
+
+              <Circle
+                center={[22.95, 79.19]}
+                radius={50000}
+                pathOptions={{
+                  color: "#4c9a6c",
+                  weight: 2,
+                  opacity: 0.5,
+                  fillColor: "#77bd91",
+                  fillOpacity: 0.08,
+                  dashArray: "8 8",
+                }}
+              />
+
+              {/* =================================================
+                  PROJECT MARKERS
+              ================================================== */}
+
+              {projects.map((project) => (
+                <Marker
+                  key={project.id}
+                  position={project.position}
+                  icon={
+                    project.status ===
+                    "Acquired"
+                      ? greenMarker
+                      : project.status ===
+                        "Proposed"
+                      ? orangeMarker
+                      : redMarker
+                  }
+                >
+                  <Popup>
+                    <Box
+                      sx={{
+                        minWidth: 190,
+                        p: 0.5,
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontWeight: 900,
+                          fontSize: 15,
+                          color: "#193c30",
+                        }}
+                      >
+                        {project.name}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          mt: 0.4,
+                          fontSize: 12,
+                          color: "#71867c",
+                        }}
+                      >
+                        {project.district},{" "}
+                        {project.state}
+                      </Typography>
+
+                      <Box
+                        sx={{
+                          display: "inline-block",
+
+                          mt: 1,
+
+                          px: 1,
+
+                          py: 0.4,
+
+                          borderRadius: 999,
+
+                          bgcolor:
+                            project.status ===
+                            "Acquired"
+                              ? "#e2f2e6"
+                              : "#fff0d9",
+
+                          color:
+                            project.status ===
+                            "Acquired"
+                              ? "#1c7553"
+                              : "#a86620",
+
+                          fontSize: 10,
+
+                          fontWeight: 800,
+                        }}
+                      >
+                        {project.status}
+                      </Box>
+                    </Box>
+                  </Popup>
+                </Marker>
+              ))}
+
+              <MapControls />
+            </MapContainer>
           </Box>
 
-          {/* BIG LEGEND - CLEARLY VISIBLE */}
-          <Box sx={{
-            mt: 3.5,
-            display: 'flex',
-            gap: 3.5,
-            bgcolor: '#ffffff',
-            p: 2.2,
-            px: 3.2,
-            borderRadius: '16px',
-            width: 'fit-content',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.09)',
-            border: '1px solid #e3ece0'
-          }}>
-            {[
-              { c: '#064e2e', l: 'Acquired' },
-              { c: '#0d7a4a', l: 'Under Acquisition' },
-              { c: '#8ed14f', l: 'Proposed' },
-              { c: '#a8d5c2', l: 'Possession Pending' },
-              { c: '#ffffff', l: 'Not Affected', border: true },
-            ].map((x) => (
-              <Box key={x.l} sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-                <Box sx={{
-                  width: 22,
-                  height: 22,
-                  borderRadius: '7px',
-                  bgcolor: x.c,
-                  border: x.border? '2px solid #8a8a8a' : '1px solid rgba(0,0,0,0.12)',
-                  boxShadow: '0 3px 6px rgba(0,0,0,0.12)',
-                  flexShrink: 0
-                }} />
-                <Typography sx={{
-                  fontSize: 17,
-                  fontWeight: 800,
-                  color: '#102418',
-                  letterSpacing: '-0.01em'
-                }}>
-                  {x.l}
+          {/* =================================================
+              MAP INFO
+          ================================================== */}
+
+          <Box
+            sx={{
+              display: "flex",
+
+              alignItems: "center",
+
+              justifyContent:
+                "space-between",
+
+              flexWrap: "wrap",
+
+              gap: 1,
+
+              mt: 1.2,
+
+              px: 0.5,
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: 10.5,
+                color: "#789288",
+                fontWeight: 600,
+              }}
+            >
+              Scroll to zoom · Drag to
+              explore · Click markers for
+              details
+            </Typography>
+
+            <Typography
+              sx={{
+                fontSize: 10.5,
+                color: "#2c7657",
+                fontWeight: 800,
+              }}
+            >
+              ● Live GIS Data
+            </Typography>
+          </Box>
+
+          {/* =================================================
+              LEGEND
+          ================================================== */}
+
+          <Box
+            sx={{
+              mt: 2,
+
+              bgcolor: "#ffffff",
+
+              borderRadius: 3,
+
+              p: {
+                xs: 1.5,
+                sm: 2,
+              },
+
+              border:
+                "1px solid #dfe9dc",
+
+              boxShadow:
+                "0 8px 22px rgba(31,74,61,0.05)",
+            }}
+          >
+            <Typography
+              sx={{
+                mb: 1.3,
+
+                fontSize: 11,
+
+                fontWeight: 900,
+
+                color: "#547669",
+
+                textTransform:
+                  "uppercase",
+
+                letterSpacing: 1,
+              }}
+            >
+              Map Legend
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+
+                flexWrap: "wrap",
+
+                gap: {
+                  xs: 1.5,
+                  sm: 2.5,
+                },
+              }}
+            >
+              {/* Acquired */}
+
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.7,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    bgcolor: "#17643f",
+                  }}
+                />
+
+                <Typography
+                  sx={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#385b4b",
+                  }}
+                >
+                  Acquired
                 </Typography>
               </Box>
-            ))}
-          </Box>
 
-        </Box>
+              {/* Proposed */}
 
-        {/* RIGHT STATS */}
-        <Box sx={{ flex: 0.55, display: 'flex', flexDirection: 'column', gap: 1.8, minWidth: 340 }}>
-          {[
-            { icon: '🗺️', val: '3,842', label: 'Total Parcels' },
-            { icon: '✅', val: '2,761', label: 'Acquired', color: '#0d7a4a' },
-            { icon: '📌', val: '680', label: 'Proposed' },
-            { icon: '📐', val: '4,210 ha', label: 'Affected Area' },
-          ].map((card) => (
-            <Box key={card.label} sx={{ bgcolor: '#f6f9f2', borderRadius: '20px', p: 3, display: 'flex', alignItems: 'center', gap: 2.2, boxShadow: '0 8px 20px rgba(0,0,0,0.06)', border: '1px solid rgba(255,255,255,0.8)' }}>
-              <Typography sx={{ fontSize: 30 }}>{card.icon}</Typography>
-              <Box>
-                <Typography sx={{ fontSize: 26, fontWeight: 900, color: card.color || '#1a3a2e', lineHeight: 1 }}>{card.val}</Typography>
-                <Typography sx={{ fontSize: 14.5, fontWeight: 600, color: '#5a7a6a' }}>{card.label}</Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.7,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    bgcolor: "#d88932",
+                  }}
+                />
+
+                <Typography
+                  sx={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#385b4b",
+                  }}
+                >
+                  Proposed
+                </Typography>
+              </Box>
+
+              {/* Acquisition */}
+
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.7,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    bgcolor: "#c94b4b",
+                  }}
+                />
+
+                <Typography
+                  sx={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#385b4b",
+                  }}
+                >
+                  Under Acquisition
+                </Typography>
+              </Box>
+
+              {/* Buffer */}
+
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.7,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 20,
+                    height: 10,
+
+                    borderRadius: 999,
+
+                    border:
+                      "2px dashed #4c9a6c",
+                  }}
+                />
+
+                <Typography
+                  sx={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#385b4b",
+                  }}
+                >
+                  500m Buffer
+                </Typography>
               </Box>
             </Box>
-          ))}
+          </Box>
+        </Box>
 
-          <Box sx={{ bgcolor: '#e8f0d8', borderRadius: '20px', p: 3.2, mt: 1, boxShadow: '0 8px 20px rgba(0,0,0,0.06)' }}>
-            <Typography sx={{ fontSize: 19, fontWeight: 900, color: '#1a3a2e', mb: 2 }}>Corridor Detection</Typography>
-            <Stack spacing={1.6}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}><Typography sx={{ fontSize: 14.5, color: '#4a6a5a' }}>Buffer Radius</Typography><Typography sx={{ fontSize: 14.5, fontWeight: 800 }}>500m</Typography></Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}><Typography sx={{ fontSize: 14.5, color: '#4a6a5a' }}>Intersecting</Typography><Typography sx={{ fontSize: 14.5, fontWeight: 800 }}>380 parcels</Typography></Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}><Typography sx={{ fontSize: 14.5, color: '#4a6a5a' }}>Corridor Length</Typography><Typography sx={{ fontSize: 14.5, fontWeight: 800 }}>142 km</Typography></Box>
+        {/* =====================================================
+            RIGHT — STATISTICS
+        ====================================================== */}
+
+        <Box
+          sx={{
+            minWidth: 0,
+
+            display: "flex",
+
+            flexDirection: "column",
+
+            gap: 1.5,
+
+            width: "100%",
+          }}
+        >
+          <StatCard
+            icon="🗺️"
+            value="3,842"
+            label="Total Parcels"
+          />
+
+          <StatCard
+            icon="✅"
+            value="2,761"
+            label="Acquired"
+            color="#0d7a4a"
+          />
+
+          <StatCard
+            icon="📌"
+            value="680"
+            label="Proposed"
+            color="#2b7656"
+          />
+
+          <StatCard
+            icon="📐"
+            value="4,210 ha"
+            label="Affected Area"
+          />
+
+          {/* =================================================
+              CORRIDOR DETECTION
+          ================================================== */}
+
+          <Box
+            sx={{
+              mt: 0.5,
+
+              bgcolor: "#e7f0d9",
+
+              borderRadius: 3,
+
+              p: {
+                xs: 2,
+                sm: 2.5,
+              },
+
+              border:
+                "1px solid #d6e5c4",
+
+              boxShadow:
+                "0 8px 24px rgba(58,91,43,0.07)",
+            }}
+          >
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={1.2}
+              sx={{ mb: 2 }}
+            >
+              <Box
+                sx={{
+                  width: 38,
+                  height: 38,
+
+                  display: "grid",
+                  placeItems: "center",
+
+                  borderRadius: 2,
+
+                  bgcolor: "#ffffff",
+
+                  fontSize: 18,
+
+                  boxShadow:
+                    "0 4px 10px rgba(31,74,61,0.06)",
+                }}
+              >
+                📡
+              </Box>
+
+              <Box>
+                <Typography
+                  sx={{
+                    fontSize: 16,
+                    fontWeight: 900,
+                    color: "#1b3e31",
+                  }}
+                >
+                  Corridor Detection
+                </Typography>
+
+                <Typography
+                  sx={{
+                    mt: 0.2,
+                    fontSize: 10.5,
+                    color: "#6e897c",
+                    fontWeight: 600,
+                  }}
+                >
+                  Spatial analysis summary
+                </Typography>
+              </Box>
             </Stack>
+
+            <Stack spacing={1}>
+              {[
+                ["Buffer Radius", "500 m"],
+                ["Intersecting", "380 parcels"],
+                ["Corridor Length", "142 km"],
+              ].map(([label, value]) => (
+                <Box
+                  key={label}
+                  sx={{
+                    display: "flex",
+
+                    justifyContent:
+                      "space-between",
+
+                    alignItems: "center",
+
+                    px: 1.2,
+                    py: 1.1,
+
+                    borderRadius: 2,
+
+                    bgcolor:
+                      "rgba(255,255,255,0.48)",
+
+                    border:
+                      "1px solid rgba(255,255,255,0.65)",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: 12,
+                      color: "#587465",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {label}
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      fontSize: 13,
+                      color: "#183b2e",
+                      fontWeight: 900,
+                    }}
+                  >
+                    {value}
+                  </Typography>
+                </Box>
+              ))}
+            </Stack>
+
+            <Box
+              sx={{
+                mt: 2,
+
+                display: "flex",
+
+                alignItems: "center",
+
+                gap: 0.8,
+
+                color: "#237454",
+
+                fontSize: 10.5,
+
+                fontWeight: 800,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 7,
+                  height: 7,
+
+                  borderRadius: "50%",
+
+                  bgcolor: "#2fa875",
+
+                  boxShadow:
+                    "0 0 0 4px rgba(47,168,117,0.12)",
+                }}
+              />
+
+              Spatial analysis complete
+            </Box>
           </Box>
         </Box>
       </Box>

@@ -1,148 +1,82 @@
 import { Box, Stack, Typography } from '@mui/material';
 
 const riskCards = [
-  { project: 'P001', state: 'Madhya Pradesh', score: 51, color: '#ee584a' },
+  { project: 'P001', state: 'Madhya Pradesh', score: 51, color: '#ef5a4c' },
   { project: 'P002', state: 'Rajasthan', score: 82, color: '#ef4e3d' },
-  { project: 'P003', state: 'Karnataka', score: 18, color: '#f1b052' },
+  { project: 'P003', state: 'Karnataka', score: 18, color: '#f5b73a' },
   { project: 'P004', state: 'Andhra Pradesh', score: 82, color: '#ef4e3d' },
-  { project: 'P005', state: 'Maharashtra', score: 51, color: '#f3c05d' },
+  { project: 'P005', state: 'Maharashtra', score: 51, color: '#f7b84e' },
 ];
 
 const delayCards = [
-  { project: 'DFC Phase 3', reason: 'Pending objections', delay: '+75d', color: '#f6bf66' },
-  { project: 'Polavaram Canal', reason: 'Court dispute', delay: '+99d', color: '#ef5d4d' },
-  { project: 'NH-44 Nagpur', reason: 'Minor land records pending', delay: '+15d', color: '#f5c471' },
-  { project: 'Pune-Mumbai', reason: 'Early stage, risk management', delay: '+3d', color: '#f5d08d' },
+  { project: 'DFC Phase 3', reason: 'Pending objections', delay: '+75d', bg: '#f4b65a' },
+  { project: 'Polavaram Canal', reason: 'Court dispute', delay: '+99d', bg: '#e74c3c' },
+  { project: 'NH-44 Nagpur', reason: 'Minor land records pending', delay: '+15d', bg: '#f5b65e' },
+  { project: 'Pune-Mumbai', reason: 'Early stage, risk management', delay: '+3d', bg: '#27ae60' },
 ];
 
 const actions = [
-  {
-    text: 'Schedule 5/19 hearing for DFC Phase 3',
-    meta: 'overdue 47 days • P002',
-    tag: 'High priority',
-    tagColor: '#f3d8d7',
-    tagText: '#d94b4b',
-  },
-  {
-    text: 'Release compensation to 214 landowners',
-    meta: 'Pending',
-    tag: 'Pending',
-    tagColor: '#edf1f6',
-    tagText: '#546d7a',
-  },
-  {
-    text: 'Re-verify mismatched Khatian 8814',
-    meta: 'Reviewed',
-    tag: 'Reviewed',
-    tagColor: '#f4e7ca',
-    tagText: '#9a6d12',
-  },
-  {
-    text: 'Initiate R&R rehabilitation',
-    meta: 'Action required',
-    tag: 'Action required',
-    tagColor: '#edf4eb',
-    tagText: '#35655a',
-  },
-  {
-    text: 'Update GIS corridor',
-    meta: 'Pune-Mumbai alignment update',
-    tag: 'Update',
-    tagColor: '#e9f1f6',
-    tagText: '#3a678a',
-  },
+  { text: 'Schedule Sec 19 hearing for DFC Phase 3', meta: 'overdue 47 days • P002', tag: 'High priority', tagBg: '#fde2e2', tagColor: '#c0392b' },
+  { text: 'Release compensation to 214 landowners', meta: '', tag: 'Pending', tagBg: '#fff0b3', tagColor: '#7a5a00' },
+  { text: 'Re-verify mismatched Khatiyan 8814', meta: '', tag: 'Review needed', tagBg: '#fff0b3', tagColor: '#7a5a00' },
+  { text: 'Initiate R&R rehabilitation', meta: '', tag: 'Action required', tagBg: '#ffe4c2', tagColor: '#8a4a00' },
+  { text: 'Update GIS corridor', meta: 'Pune-Mumbai alignment update', tag: '', tagBg: '', tagColor: '' },
 ];
 
 function DecisionSupport() {
   return (
-    <Box
-      sx={{
-        width: '100%',
-        maxWidth: 980,
-        bgcolor: '#edf1eb',
-        borderRadius: 3,
-        p: 2.8,
-        boxSizing: 'border-box',
-      }}
-    >
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2.5 }}>
-        <Box>
-          <Typography sx={{ fontSize: 28, fontWeight: 800, color: '#183f35' }}>AI Decision Support</Typography>
-          <Typography sx={{ fontSize: 16, color: '#4f7867', fontWeight: 500 }}>
-            RFCTLARR Act — Real-time Management
-          </Typography>
-        </Box>
-
-        <Box
-          sx={{
-            bgcolor: '#dfece1',
-            borderRadius: 2,
-            color: '#1a5e4c',
-            px: 1.6,
-            py: 0.8,
-            fontSize: 13,
-            fontWeight: 700,
-          }}
-        >
-          + New Project
-        </Box>
-      </Stack>
-
-      <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-        <Box sx={{ flex: 1, bgcolor: '#f5f7f4', borderRadius: 3, p: 2.2, border: '1px solid rgba(48,95,74,0.08)' }}>
-          <Typography sx={{ fontSize: 18, fontWeight: 800, color: '#183f35', mb: 1.5 }}>Project Risk Indicators</Typography>
-
-          <Stack spacing={1.3}>
+    <Box sx={{ width: '100%', minHeight: '100vh', bgcolor: '#eef1eb', p: 3, boxSizing: 'border-box' }}>
+      <Stack direction={{ xs: 'column', lg: 'row' }} spacing={2.5} sx={{ width: '100%', alignItems: 'stretch' }}>
+        <Box sx={{ flex: 1, minHeight: 640, bgcolor: '#fdfbf6', borderRadius: '18px', p: 3, border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+          <Typography sx={{ fontSize: '24px', fontWeight: 900, color: '#111', mb: 3 }}>Project Risk Indicators</Typography>
+          <Stack spacing={3.2}>
             {riskCards.map((item) => (
-              <Box key={item.project} sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-                <Box sx={{ width: 18, height: 18, borderRadius: '50%', bgcolor: '#f2f5f3', border: '1px solid rgba(34,89,70,0.2)', display: 'grid', placeItems: 'center' }}>
-                  <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: item.color }} />
+              <Box key={item.project}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Box sx={{ width: 36, height: 36, borderRadius: '8px', bgcolor: '#f1f1f1', display: 'grid', placeItems: 'center', fontSize: 18 }}>🛡️</Box>
+                    <Box>
+                      <Typography sx={{ fontSize: '22px', fontWeight: 800, color: '#111', lineHeight: 1 }}>{item.project}</Typography>
+                      <Typography sx={{ fontSize: '17px', color: '#444', mt: 0.3, fontWeight: 600 }}>{item.state}</Typography>
+                    </Box>
+                  </Stack>
+                  <Typography sx={{ fontSize: '22px', fontWeight: 900 }}>{item.score}</Typography>
+                </Stack>
+                <Box sx={{ mt: 1.2, ml: 5.5, width: 'calc(100% - 44px)', height: 10, bgcolor: '#eee', borderRadius: 999 }}>
+                  <Box sx={{ width: `${item.score}%`, height: '100%', bgcolor: item.color, borderRadius: 999 }} />
                 </Box>
-                <Typography sx={{ fontSize: 15, fontWeight: 700, color: '#1d473d', minWidth: 52 }}>{item.project}</Typography>
-                <Typography sx={{ fontSize: 14, color: '#3b675e', flex: 1 }}>{item.state}</Typography>
-                <Box sx={{ flex: 1, height: 10, borderRadius: 999, bgcolor: '#e7efe9', overflow: 'hidden' }}>
-                  <Box sx={{ width: `${item.score}%`, height: '100%', borderRadius: 999, bgcolor: item.color }} />
-                </Box>
-                <Typography sx={{ fontSize: 14, fontWeight: 800, color: '#183f35', minWidth: 26, textAlign: 'right' }}>{item.score}</Typography>
               </Box>
             ))}
           </Stack>
         </Box>
 
-        <Box sx={{ flex: 1, bgcolor: '#f5f7f4', borderRadius: 3, p: 2.2, border: '1px solid rgba(48,95,74,0.08)' }}>
-          <Typography sx={{ fontSize: 18, fontWeight: 800, color: '#183f35', mb: 1.5 }}>Delay Prediction</Typography>
-
-          <Stack spacing={1.4}>
+        <Box sx={{ flex: 1, minHeight: 640, bgcolor: '#fdfbf6', borderRadius: '18px', p: 3, border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+          <Typography sx={{ fontSize: '24px', fontWeight: 900, color: '#111', mb: 3 }}>Delay Prediction</Typography>
+          <Stack spacing={2.5}>
             {delayCards.map((item) => (
-              <Box key={item.project} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1.2 }}>
-                <Box sx={{ minWidth: 0, flex: 1 }}>
-                  <Typography sx={{ fontSize: 15, fontWeight: 700, color: '#183f35' }}>{item.project}</Typography>
-                  <Typography sx={{ fontSize: 12, color: '#4f7867', mt: 0.25 }}>{item.reason}</Typography>
+              <Box key={item.project} sx={{ bgcolor: '#fff', border: '1px solid #efefef', borderRadius: '14px', p: '18px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', minHeight: 76 }}>
+                <Box>
+                  <Typography sx={{ fontSize: '22px', fontWeight: 800, color: '#111' }}>{item.project}</Typography>
+                  <Typography sx={{ fontSize: '16px', color: '#666', mt: 0.5, fontWeight: 500 }}>{item.reason}</Typography>
                 </Box>
-                <Box sx={{ bgcolor: item.color, color: '#fff', borderRadius: 1.5, px: 1.2, py: 0.5, fontSize: 12, fontWeight: 800 }}>
-                  {item.delay}
-                </Box>
+                <Box sx={{ bgcolor: item.bg, color: '#fff', px: 1.8, py: 0.8, borderRadius: '10px', fontSize: '19px', fontWeight: 800, minWidth: 58, textAlign: 'center' }}>{item.delay}</Box>
               </Box>
             ))}
           </Stack>
         </Box>
 
-        <Box sx={{ flex: 1, bgcolor: '#f5f7f4', borderRadius: 3, p: 2.2, border: '1px solid rgba(48,95,74,0.08)' }}>
-          <Typography sx={{ fontSize: 18, fontWeight: 800, color: '#183f35', mb: 1.5 }}>AI Priority Actions</Typography>
-
-          <Stack spacing={1.3}>
-            {actions.map((action, index) => (
-              <Box key={`${action.text}-${index}`} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                <Box sx={{ width: 18, height: 18, borderRadius: '50%', bgcolor: '#dfeeee', color: '#1f6050', display: 'grid', placeItems: 'center', fontSize: 12, fontWeight: 800, mt: 0.2 }}>
-                  {index + 1}
-                </Box>
-                <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ fontSize: 15, fontWeight: 700, color: '#183f35', lineHeight: 1.35 }}>{action.text}</Typography>
-                  <Typography sx={{ fontSize: 12, color: '#4f7867', mt: 0.2 }}>{action.meta}</Typography>
-                </Box>
-                <Box sx={{ bgcolor: action.tagColor, color: action.tagText, borderRadius: 1.5, px: 1, py: 0.5, fontSize: 11, fontWeight: 800, whiteSpace: 'nowrap' }}>
-                  {action.tag}
-                </Box>
+        <Box sx={{ flex: 1, minHeight: 640, bgcolor: '#fdfbf6', borderRadius: '18px', p: 3, border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+          <Typography sx={{ fontSize: '24px', fontWeight: 900, color: '#111', mb: 3 }}>AI Priority Actions</Typography>
+          <Stack spacing={2.8}>
+            {actions.map((a, i) => (
+              <Box key={`${a.text}-${i}`}>
+                <Typography sx={{ fontSize: '20px', fontWeight: 700, color: '#111', lineHeight: 1.35 }}>
+                  <span style={{ marginRight: 6, fontWeight: 800 }}>{i + 1}.</span>{a.text}
+                </Typography>
+                {a.meta && <Typography sx={{ fontSize: '15px', color: '#666', ml: 3.5, mt: 0.4, fontWeight: 500 }}>{a.meta}</Typography>}
+                {a.tag && (
+                  <Box sx={{ ml: 3.5, mt: 1, display: 'inline-block', bgcolor: a.tagBg, color: a.tagColor, px: 1.4, py: 0.4, borderRadius: '6px', fontSize: '13px', fontWeight: 800 }}>{a.tag}</Box>
+                )}
               </Box>
             ))}
           </Stack>

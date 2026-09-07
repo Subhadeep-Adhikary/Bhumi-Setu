@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 const alertCategories = ['All', 'Breach', 'Stall', 'Document', 'Escalation', 'Info'];
 
@@ -46,51 +46,27 @@ function Alerts() {
     <Box
       sx={{
         width: '100%',
-        maxWidth: 980,
+        minHeight: '100vh',
         bgcolor: '#eef2ed',
-        borderRadius: 3,
-        p: 2.8,
+        p: { xs: 2.5, md: 4 },
         boxSizing: 'border-box',
       }}
     >
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2.5 }}>
-        <Box>
-          <Typography sx={{ fontSize: 28, fontWeight: 800, color: '#183f35' }}>Smart Alerts &amp; Timeline Tracker</Typography>
-          <Typography sx={{ fontSize: 16, color: '#4f7867', fontWeight: 500 }}>
-            RFCTLARR Act — Real-time Management
-          </Typography>
-        </Box>
-
-        <Box
-          sx={{
-            bgcolor: '#dfece1',
-            borderRadius: 2,
-            color: '#1a5e4c',
-            px: 1.6,
-            py: 0.8,
-            fontSize: 13,
-            fontWeight: 700,
-          }}
-        >
-          + New Project
-        </Box>
-      </Stack>
-
-      <Stack direction="row" spacing={1.2} sx={{ mb: 2.5, flexWrap: 'wrap' }}>
+      <Stack direction="row" spacing={1.2} sx={{ mb: 3, flexWrap: 'wrap', rowGap: 1.2 }}>
         {alertCategories.map((category) => {
-          const isActive = category === 'All';
+          const active = category === 'All';
           return (
             <Box
               key={category}
               sx={{
-                bgcolor: isActive ? '#dfeafc' : '#edf1ee',
-                color: isActive ? '#1c4d7a' : '#355d4d',
-                border: isActive ? '1px solid rgba(57,105,161,0.18)' : '1px solid rgba(52,86,69,0.08)',
-                borderRadius: 2,
-                px: 1.7,
-                py: 0.8,
-                fontSize: 14,
-                fontWeight: 700,
+                bgcolor: active ? '#3b82f6' : '#e5e9e3',
+                color: active ? '#fff' : '#222',
+                borderRadius: '24px',
+                px: 3,
+                py: 1.1,
+                fontSize: '18px',
+                fontWeight: active ? 800 : 600,
+                cursor: 'pointer',
               }}
             >
               {category}
@@ -99,77 +75,78 @@ function Alerts() {
         })}
       </Stack>
 
-      <Stack spacing={1.8}>
+      <Stack spacing={2.2}>
         {alerts.map((alert) => (
           <Box
             key={alert.title}
             sx={{
-              bgcolor: '#f4f6f2',
-              borderRadius: 3,
-              p: 2,
+              width: '100%',
+              bgcolor: '#fdfbf6',
+              borderRadius: '16px',
+              p: '22px 28px',
               display: 'flex',
               alignItems: 'center',
-              gap: 2,
-              border: '1px solid rgba(58,93,74,0.08)',
+              gap: 2.5,
+              border: '1px solid rgba(0,0,0,0.06)',
+              boxShadow: '0 3px 10px rgba(0,0,0,0.06)',
+              boxSizing: 'border-box',
             }}
           >
             <Box
               sx={{
-                width: 42,
-                height: 42,
+                width: 56,
+                height: 56,
                 borderRadius: '50%',
                 bgcolor: alert.color,
                 color: alert.iconColor,
                 display: 'grid',
                 placeItems: 'center',
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: 800,
+                flexShrink: 0,
               }}
             >
               {alert.icon}
             </Box>
 
             <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography sx={{ fontSize: 22, fontWeight: 800, color: '#183f35', mb: 0.2 }}>
+              <Typography sx={{ fontSize: '22px', fontWeight: 800, color: '#111', lineHeight: 1.2 }}>
                 {alert.title}
               </Typography>
-              <Typography sx={{ fontSize: 15, color: '#4e7867', fontWeight: 500 }}>
+              <Typography sx={{ fontSize: '17px', color: '#444', fontWeight: 500, mt: 0.6, lineHeight: 1.4 }}>
                 {alert.detail}
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.6 }}>
+            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ flexShrink: 0, ml: 2 }}>
               <Box
                 sx={{
-                  bgcolor: '#edf0ee',
-                  borderRadius: 2,
-                  color: '#1a4239',
-                  px: 1.5,
+                  bgcolor: '#f3e9d5',
+                  borderRadius: '10px',
+                  px: 2,
                   py: 0.8,
+                  fontSize: '15px',
                   fontWeight: 700,
-                  fontSize: 14,
+                  color: '#5a4a2a',
                 }}
               >
                 {alert.project} • View
               </Box>
-
-              <Button
+              <Box
                 sx={{
-                  bgcolor: '#f2d7d7',
-                  color: '#d64a4a',
-                  borderRadius: 2,
-                  px: 1.8,
-                  py: 0.7,
-                  textTransform: 'none',
+                  bgcolor: '#fde8e8',
+                  color: '#c53030',
+                  borderRadius: '10px',
+                  px: 2.2,
+                  py: 0.8,
+                  fontSize: '15px',
                   fontWeight: 700,
-                  fontSize: 14,
-                  boxShadow: 'none',
-                  '&:hover': { bgcolor: '#efd5d5' },
+                  cursor: 'pointer',
                 }}
               >
                 Escalate →
-              </Button>
-            </Box>
+              </Box>
+            </Stack>
           </Box>
         ))}
       </Stack>

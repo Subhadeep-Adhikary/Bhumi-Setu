@@ -47,11 +47,18 @@ function CompensationCalc({ projectId, projects, onUpdated }) {
     const baseRate = Number(marketValue) || 0;
     const multiplierFactor = multiplierMap[multiplier] || 1;
 
-    const baseMarketValue = area * baseRate * multiplierFactor;
+    const base = area * baseRate;
+    const additional = base * (multiplierFactor - 1);
+    const baseMarketValue = base + additional;
     const solatium = baseMarketValue * projectData.compensation.solatiumRate;
     const totalComp = baseMarketValue + solatium;
 
     return {
+      area,
+      baseRate,
+      base,
+      additional,
+      multiplierFactor,
       baseMarketValue,
       solatium,
       totalComp,
@@ -91,154 +98,100 @@ function CompensationCalc({ projectId, projects, onUpdated }) {
 
   if (!project) return <Typography sx={{ p: 4, color: '#4d7866' }}>No project selected</Typography>;
 
+  const formatCurrency = (value) => new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(value);
+  const formatNumber = (value) => new Intl.NumberFormat('en-IN').format(value);
+
   return (
     <Box
       sx={{
         width: '100%',
-        maxWidth: 980,
-        bgcolor: '#eef2ed',
-        borderRadius: 3,
-        p: 2.8,
+        minHeight: 'calc(100vh - 90px)',
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        alignItems: 'stretch',
+        gap: 3,
+        bgcolor: '#f0f4ef',
+        p: 2.5,
         boxSizing: 'border-box',
       }}
     >
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2.7 }}>
+      <Box sx={{ flex: 1, width: { xs: '100%', md: '50%' }, display: 'flex', flexDirection: 'column', gap: 2.5, bgcolor: '#fffdfa', borderRadius: 3, p: 4, border: '1px solid #e6e9e4', boxSizing: 'border-box' }}>
         <Box>
-          <Typography sx={{ fontSize: 28, fontWeight: 800, color: '#183f35' }}>
-            Compensation &amp; Award Calculator
-          </Typography>
-          <Typography sx={{ fontSize: 16, color: '#4f7867', fontWeight: 500 }}>
-            RFCTLARR Act — Real-time Management
-          </Typography>
-        </Box>
-
-      </Stack>
-
-      <Stack direction="row" spacing={3} sx={{ mb: 3 }}>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 800, letterSpacing: 1.2, color: '#315d4f', textTransform: 'uppercase', mb: 1.2 }}>
-            Land Area (hectares)
-          </Typography>
+          <Typography sx={{ fontSize: 18, fontWeight: 900, mb: 1.2 }}>LAND AREA (HECTARES)</Typography>
           <TextField
             fullWidth
             value={landArea}
             onChange={(e) => setLandArea(e.target.value)}
+            inputProps={{ style: { fontSize: 22, fontWeight: 800, padding: '18px 16px' } }}
             sx={{
-              '& .MuiOutlinedInput-root': {
-                bgcolor: '#f1f4f0',
-                borderRadius: 2,
-                '& fieldset': { borderColor: '#d5ddd7' },
-              },
+              '& .MuiOutlinedInput-root': { bgcolor: '#fff', borderRadius: 2.5, height: 62 },
             }}
           />
-          <Typography sx={{ mt: 0.8, fontSize: 14, color: '#4b7366', fontWeight: 500 }}>
-            Total affected area
-          </Typography>
+          <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#5a6f67', mt: 1 }}>Total affected area</Typography>
         </Box>
 
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 800, letterSpacing: 1.2, color: '#315d4f', textTransform: 'uppercase', mb: 1.2 }}>
-            Market Value (₹/HA)
-          </Typography>
+        <Box>
+          <Typography sx={{ fontSize: 18, fontWeight: 900, mb: 1.2 }}>MARKET VALUE (₹/HA)</Typography>
           <TextField
             fullWidth
             value={marketValue}
             onChange={(e) => setMarketValue(e.target.value)}
+            inputProps={{ style: { fontSize: 22, fontWeight: 800, padding: '18px 16px' } }}
             sx={{
-              '& .MuiOutlinedInput-root': {
-                bgcolor: '#f1f4f0',
-                borderRadius: 2,
-                '& fieldset': { borderColor: '#d5ddd7' },
-              },
+              '& .MuiOutlinedInput-root': { bgcolor: '#fff', borderRadius: 2.5, height: 62 },
             }}
           />
-          <Typography sx={{ mt: 0.8, fontSize: 14, color: '#4b7366', fontWeight: 500 }}>
-            As per collector rate
-          </Typography>
-        </Box>
-      </Stack>
-
-      <Stack direction="row" spacing={3} sx={{ mb: 3 }}>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 800, letterSpacing: 1.2, color: '#315d4f', textTransform: 'uppercase', mb: 1.2 }}>
-            Rural/Urban Multiplier
-          </Typography>
-
-          <FormControl fullWidth>
-            <Select
-              value={multiplier}
-              onChange={(e) => setMultiplier(e.target.value)}
-              sx={{
-                bgcolor: '#f1f4f0',
-                borderRadius: 2,
-                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#d5ddd7' },
-                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#a9cdb8' },
-              }}
-            >
-              <MenuItem value="Urban">Urban</MenuItem>
-              <MenuItem value="Rural (2x)">Rural (2x)</MenuItem>
-            </Select>
-          </FormControl>
+          <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#5a6f67', mt: 1 }}>As per collector rate</Typography>
         </Box>
 
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 800, letterSpacing: 1.2, color: '#315d4f', textTransform: 'uppercase', mb: 1.2 }}>
-            Land Use Type
-          </Typography>
+        <Box>
+          <Typography sx={{ fontSize: 18, fontWeight: 900, mb: 1.5 }}>RURAL/URBAN MULTIPLIER</Typography>
+          <Stack direction="row" spacing={1.5} flexWrap="wrap" useFlexGap>
+            {Object.keys(multiplierMap).map((option) => (
+              <Box key={option} component="button" type="button" onClick={() => setMultiplier(option)} sx={{ cursor: 'pointer', px: 2.8, py: 1.3, borderRadius: 10, fontSize: 16, fontWeight: 800, bgcolor: multiplier === option ? '#0f5132' : '#fff', color: multiplier === option ? '#fff' : '#1a1a1a', border: `1px solid ${multiplier === option ? '#0f5132' : '#e0e5de'}` }}>
+                {option}
+              </Box>
+            ))}
+          </Stack>
+        </Box>
 
+        <Box>
+          <Typography sx={{ fontSize: 18, fontWeight: 900, mb: 1.5 }}>LAND USE TYPE</Typography>
           <FormControl fullWidth>
             <Select
               value={landUse}
               onChange={(e) => setLandUse(e.target.value)}
-              sx={{
-                bgcolor: '#f1f4f0',
-                borderRadius: 2,
-                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#d5ddd7' },
-                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#a9cdb8' },
-              }}
+              sx={{ bgcolor: '#fff', borderRadius: 2.5, height: 62, fontWeight: 700, fontSize: 19 }}
             >
               {landUseOptions.map((option) => (
-                <MenuItem key={option} value={option}>{option}</MenuItem>
+                <MenuItem key={option} value={option} sx={{ fontSize: 17 }}>{option}</MenuItem>
               ))}
             </Select>
           </FormControl>
         </Box>
-      </Stack>
+      </Box>
 
-      <Stack direction="row" spacing={3} sx={{ alignItems: 'stretch' }}>
-        <Box sx={{ flex: 1.4, minWidth: 0, bgcolor: '#f4f7f3', borderRadius: 3, p: 2.4, border: '1px solid rgba(28,92,75,0.08)' }}>
-          <Typography sx={{ fontSize: 14, fontWeight: 800, letterSpacing: 1.2, color: '#365f54', textTransform: 'uppercase', mb: 2 }}>
-            Base Market Value
-          </Typography>
-
-          <Typography sx={{ fontSize: 18, fontWeight: 700, color: '#183f35', mb: 1 }}>
-            {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(calculations.baseMarketValue)}
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: '#4d7866', fontWeight: 500 }}>
-            Additional Amount (2x multiplier)
-          </Typography>
-
-          <Typography sx={{ fontSize: 18, fontWeight: 800, color: '#183f35', mt: 2.5 }}>
-            {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(calculations.solatium)}
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: '#4d7866', fontWeight: 500, mt: 0.5 }}>
-            Applied for rural/remot e areas
-          </Typography>
-
-          <Typography sx={{ fontSize: 18, fontWeight: 800, color: '#183f35', mt: 2.5 }}>
-            {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(calculations.totalComp)}
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: '#4d7866', fontWeight: 500, mt: 0.5 }}>
-            Total Compensation
-          </Typography>
+      <Box sx={{ flex: 1, width: { xs: '100%', md: '50%' }, display: 'flex', flexDirection: 'column', gap: 3, boxSizing: 'border-box' }}>
+        <Box sx={{ bgcolor: '#fffdfa', borderRadius: 3, p: 4, border: '1px solid #e6e9e4', flex: 1 }}>
+          <Typography sx={{ fontSize: 18, fontWeight: 900, mb: 2 }}>BASE MARKET VALUE</Typography>
+          <Typography sx={{ fontSize: 22, fontWeight: 800 }}>{calculations.area} ha × ₹{formatNumber(calculations.baseRate)}/ha</Typography>
+          <Typography sx={{ fontSize: 18, fontWeight: 700, mt: 2.5 }}>Additional Amount ({calculations.multiplierFactor}× multiplier)</Typography>
+          <Typography sx={{ fontSize: 28, fontWeight: 900 }}>{formatCurrency(calculations.additional || calculations.base)}</Typography>
+          <Typography sx={{ fontSize: 14, color: '#5a6f67' }}>Applied for rural areas</Typography>
+          <Typography sx={{ fontSize: 17, fontWeight: 700, mt: 2.5 }}>Solatium @ {projectData.compensation.solatiumRate * 100} %</Typography>
+          <Typography sx={{ fontSize: 20, fontWeight: 800 }}>{formatCurrency(calculations.solatium)}</Typography>
+          <Typography sx={{ fontSize: 17, fontWeight: 700, mt: 1.5 }}>Total Compensation</Typography>
+          <Typography sx={{ fontSize: 30, fontWeight: 900, color: '#0f5132' }}>{formatCurrency(calculations.totalComp)}</Typography>
         </Box>
 
-        <Box sx={{ flex: 1, minWidth: 0, bgcolor: '#f4f7f3', borderRadius: 3, p: 2.4, border: '1px solid rgba(28,92,75,0.08)' }}>
-          <Typography sx={{ fontSize: 14, fontWeight: 800, letterSpacing: 1.2, color: '#365f54', textTransform: 'uppercase', mb: 2 }}>
-            DBT Payment Status
-          </Typography>
+        <Box sx={{ bgcolor: '#fffdfa', borderRadius: 3, p: 4, border: '1px solid #e6e9e4', flex: 1 }}>
+          <Typography sx={{ fontSize: 18, fontWeight: 900, mb: 2.5 }}>DBT PAYMENT STATUS</Typography>
 
-          <Stack spacing={1.2}>
+          <Stack spacing={3}>
             {projectData.compensation.payments.map((p) => {
               const paymentStatus = paymentStatuses[p.name] || p.status;
 
@@ -247,18 +200,14 @@ function CompensationCalc({ projectId, projects, onUpdated }) {
                 key={p.name}
                 sx={{
                   display: 'flex',
-                  alignItems: 'center',
                   justifyContent: 'space-between',
+                  alignItems: 'center',
                   gap: 1,
-                  bgcolor: '#f0f5f1',
-                  borderRadius: 2,
-                  px: 1.2,
-                  py: 0.8,
                 }}
               >
                 <Box sx={{ minWidth: 0 }}>
-                  <Typography sx={{ fontSize: 15, fontWeight: 700, color: '#183f35' }}>{p.name}</Typography>
-                  <Typography sx={{ fontSize: 12, color: '#4d7866' }}>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(p.amount)}</Typography>
+                  <Typography sx={{ fontSize: 17, fontWeight: 800 }}>{p.name}</Typography>
+                  <Typography sx={{ fontSize: 14, color: '#5a6f67' }}>{formatCurrency(p.amount)} · {p.date || '—'}</Typography>
                 </Box>
 
                 <Stack direction="row" spacing={0.8} alignItems="center">
@@ -266,11 +215,11 @@ function CompensationCalc({ projectId, projects, onUpdated }) {
                     sx={{
                       bgcolor: statusColor[paymentStatus],
                       color: statusTextColor[paymentStatus],
-                      borderRadius: 1.5,
-                      px: 1.1,
-                      py: 0.45,
-                      fontSize: 12,
-                      fontWeight: 800,
+                      borderRadius: 1.2,
+                      px: 1.4,
+                      py: 0.5,
+                      fontSize: 13,
+                      fontWeight: 900,
                       whiteSpace: 'nowrap',
                     }}
                   >
@@ -283,7 +232,7 @@ function CompensationCalc({ projectId, projects, onUpdated }) {
                     onClick={() => payLandowner(p.name)}
                     title={paymentReady ? 'Pay this landowner' : 'Verify documents and calculate a valid compensation amount first'}
                     sx={{
-                      minWidth: 48,
+                      minWidth: 52,
                       px: 1,
                       py: 0.45,
                       textTransform: 'none',
@@ -300,7 +249,7 @@ function CompensationCalc({ projectId, projects, onUpdated }) {
             })}
           </Stack>
         </Box>
-      </Stack>
+      </Box>
     </Box>
   );
 }
