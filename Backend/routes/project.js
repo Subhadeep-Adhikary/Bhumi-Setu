@@ -4,6 +4,7 @@ const Project = require('../models/Project');
 const requireAuth = require('../middleware/auth');
 
 const router = express.Router();
+const governmentApiUrl = process.env.GOVERNMENT_API_URL || 'http://127.0.0.1:6000';
 
 router.use(requireAuth);
 
@@ -38,7 +39,7 @@ router.post('/', async (req, res) => {
 			return res.status(400).json({ message: 'Project name, description, and parcel ID are required' });
 		}
 
-		const verification = await axios.get(`http://127.0.0.1:6000/land/${encodeURIComponent(parcelId)}`);
+		const verification = await axios.get(`${governmentApiUrl}/land/${encodeURIComponent(parcelId)}`);
 		if (!verification.data.verified) {
 			return res.status(400).json({ message: 'Parcel could not be verified by the government API' });
 		}
