@@ -64,8 +64,8 @@ export default function Auth() {
 
         <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Box sx={{ width: 42, height: 42, bgcolor: 'white', borderRadius: 2, display: 'grid', placeItems: 'center', color: '#17633d' }}>
-              <LockOutlinedIcon />
+            <Box sx={{ width: 46, height: 46, borderRadius: 2, overflow: 'hidden', display: 'grid', placeItems: 'center', bgcolor: '#ffffff', boxShadow: '0 8px 18px rgba(0,0,0,0.12)' }}>
+              <Box component="img" src="/logo.svg" alt="Bhoomi-Setu logo" sx={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }} />
             </Box>
             <Typography sx={{ fontWeight: 900, fontSize: 20, letterSpacing: 0.5 }}>Bhoomi-Setu</Typography>
           </Box>

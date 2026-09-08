@@ -1,0 +1,273 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#82d813" />
+      <stop offset="100%" stop-color="#6bc007" />
+    </radialGradient>
+
+    <!-- Globe Sphere Shading -->
+    <radialGradient id="globeGrad" cx="42%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#9ce62c" />
+      <stop offset="65%" stop-color="#68b80e" />
+      <stop offset="100%" stop-color="#3d7309" />
+    </radialGradient>
+
+    <!-- Isometric Plane Gradients -->
+    <linearGradient id="tileTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2d7e32" />
+      <stop offset="100%" stop-color="#144d27" />
+    </linearGradient>
+
+    <linearGradient id="tileLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#194868" />
+      <stop offset="100%" stop-color="#0c253d" />
+    </linearGradient>
+
+    <linearGradient id="tileRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e3a52" />
+      <stop offset="100%" stop-color="#051c2d" />
+    </linearGradient>
+
+    <linearGradient id="tileBottom" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1b5e34" />
+      <stop offset="100%" stop-color="#092d19" />
+    </linearGradient>
+
+    <!-- Bridge Arch Gradient -->
+    <linearGradient id="bridgeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f3454" />
+      <stop offset="50%" stop-color="#1e5f8a" />
+      <stop offset="100%" stop-color="#0f3454" />
+    </linearGradient>
+
+    <clipPath id="globeClip">
+      <circle cx="400" cy="400" r="260" />
+    </clipPath>
+  </defs>
+
+  <!-- Transparent background for use on any surface -->
+
+  <!-- Subtle Background Sparkle Accent (Bottom Right) -->
+  <path d="M 700 660 Q 700 680 720 680 Q 700 680 700 700 Q 700 680 680 680 Q 700 680 700 660 Z" 
+        fill="#8ae619" opacity="0.6" />
+
+  <!-- MAIN EMBLEM GROUP -->
+  <g id="Emblem" transform="translate(0, 0)">
+    
+    <!-- GLOBE BASE -->
+    <circle cx="400" cy="400" r="260" fill="url(#globeGrad)" />
+
+    <!-- GLOBE LATITUDE & LONGITUDE LINEWORK -->
+    <g clip-path="url(#globeClip)" fill="none" stroke="#0e3822" stroke-width="4" opacity="0.85">
+      <!-- Longitude curves -->
+      <path d="M 400 140 C 330 220 330 580 400 660" stroke-width="5" />
+      <path d="M 400 140 C 470 220 470 580 400 660" stroke-width="5" />
+      <path d="M 400 140 C 260 250 260 550 400 660" stroke-width="4" />
+      <path d="M 400 140 C 540 250 540 550 400 660" stroke-width="4" />
+      
+      <!-- Network branch in upper right globe -->
+      <path d="M 460 200 L 520 220 L 570 240" stroke="#d5b97b" stroke-width="4" />
+      <circle cx="590" cy="200" r="26" fill="#4d8813" stroke="#d5b97b" stroke-width="6" />
+      <circle cx="590" cy="200" r="14" fill="#eed99f" />
+    </g>
+
+    <!-- ISOMETRIC MAP PLATFORM -->
+    <!-- Map drop/cast shadow -->
+    <path d="M 120 440 L 400 690 L 680 440 L 560 410 L 400 520 L 240 410 Z" 
+          fill="#061a14" opacity="0.5" />
+
+    <!-- 3D Map Base Polygon Blocks -->
+    <g stroke="#ffffff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      
+      <!-- Left Facet (Blue tone) -->
+      <polygon points="120,440 290,360 400,450 240,545" fill="url(#tileLeft)" />
+      
+      <!-- Top Facet (Green tone) -->
+      <polygon points="290,360 400,285 520,360 400,450" fill="url(#tileTop)" />
+      
+      <!-- Right Facet (Dark Teal) -->
+      <polygon points="400,450 520,360 680,440 555,540" fill="url(#tileRight)" />
+      
+      <!-- Bottom Center Facet (Emerald tone) -->
+      <polygon points="240,545 400,450 555,540 400,665" fill="url(#tileBottom)" />
+    </g>
+
+    <!-- MAP CONTOUR GRAPHICS & INNER DETAILS -->
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Top Green Map internal organic lines -->
+      <path d="M 330 380 Q 400 340 470 380" stroke="#48a842" stroke-width="3" />
+      <path d="M 360 405 Q 400 375 445 405" stroke="#48a842" stroke-width="2.5" />
+
+      <!-- Left Blue Map routes/data -->
+      <path d="M 150 455 Q 185 470 200 440 T 260 435" stroke="#35739d" stroke-width="3.5" />
+      <path d="M 180 500 Q 210 490 230 515" stroke="#35739d" stroke-width="3" />
+      <circle cx="210" cy="485" r="4" fill="#64b5f6" />
+      <!-- Data bars -->
+      <line x1="310" y1="395" x2="328" y2="395" stroke="#ffffff" stroke-width="3" />
+      <line x1="310" y1="403" x2="320" y2="403" stroke="#ffffff" stroke-width="3" />
+
+      <!-- Right Blue Map data network -->
+      <!-- Data menu horizontal bars -->
+      <line x1="620" y1="425" x2="648" y2="425" stroke="#7bc67a" stroke-width="4" />
+      <line x1="620" y1="435" x2="648" y2="435" stroke="#7bc67a" stroke-width="4" />
+      <line x1="620" y1="445" x2="648" y2="445" stroke="#7bc67a" stroke-width="4" />
+      <path d="M 590 495 C 570 510 560 525 540 525" stroke="#1d556e" stroke-width="3" />
+    </g>
+
+    <!-- CONSTELLATION / GEOLOCATION NODES & LINKS -->
+    <g stroke="#ceaf6f" stroke-width="3.5" fill="none">
+      <!-- Top to Left Nodes -->
+      <line x1="340" y1="340" x2="245" y2="415" />
+      <line x1="245" y1="415" x2="295" y2="465" />
+      <line x1="295" y1="465" x2="295" y2="530" stroke="#3d828a" />
+      <line x1="295" y1="465" x2="385" y2="520" stroke="#3d828a" />
+
+      <!-- Bottom Cluster Nodes -->
+      <line x1="245" y1="415" x2="400" y2="535" />
+      <line x1="400" y1="535" x2="400" y2="630" />
+      <line x1="400" y1="535" x2="340" y2="590" />
+      <line x1="400" y1="535" x2="460" y2="590" />
+      <line x1="340" y1="590" x2="400" y2="630" />
+      <line x1="460" y1="590" x2="400" y2="630" />
+
+      <!-- Right Cluster Nodes -->
+      <line x1="480" y1="380" x2="515" y2="440" />
+      <line x1="515" y1="440" x2="585" y2="455" />
+      <line x1="515" y1="440" x2="540" y2="510" />
+      <line x1="585" y1="455" x2="635" y2="395" />
+      <line x1="585" y1="455" x2="615" y2="515" />
+      <line x1="540" y1="510" x2="615" y2="515" />
+      <line x1="460" y1="535" x2="515" y2="565" />
+      <line x1="515" y1="565" x2="540" y2="510" />
+
+      <!-- Golden Node Pin Heads -->
+      <g fill="#dfc896" stroke="#ffffff" stroke-width="2.5">
+        <circle cx="340" cy="340" r="6" />
+        <circle cx="245" cy="415" r="9" />
+        <circle cx="295" cy="465" r="7" fill="#62a39a" stroke="#fff" />
+        <circle cx="400" cy="535" r="10" />
+        <circle cx="400" cy="630" r="8" />
+        <circle cx="480" cy="380" r="5" />
+        <circle cx="515" cy="440" r="8" />
+        <circle cx="585" cy="455" r="10" />
+        <circle cx="635" cy="395" r="8" />
+        <circle cx="615" cy="515" r="8" />
+        <circle cx="460" cy="535" r="5" />
+        <circle cx="515" cy="565" r="7" />
+      </g>
+    </g>
+
+    <!-- TARGET RADAR PULSES (Under Pin) -->
+    <g fill="none" stroke="#68af27" stroke-width="3" opacity="0.8">
+      <ellipse cx="400" cy="465" rx="42" ry="20" />
+      <ellipse cx="400" cy="465" rx="26" ry="12" />
+      <ellipse cx="400" cy="465" rx="12" ry="6" />
+    </g>
+
+    <!-- CENTER GEO-PIN -->
+    <g filter="drop-shadow(0px 8px 6px rgba(0,0,0,0.4))">
+      <!-- Pin Outer Contour -->
+      <path d="M 400 325 
+               C 365 325 338 352 338 388 
+               C 338 430 388 475 400 485 
+               C 412 475 462 430 462 388 
+               C 462 352 435 325 400 325 Z" 
+            fill="#0f3454" stroke="#ffffff" stroke-width="7" stroke-linejoin="round" />
+      
+      <!-- Inner Pin Center Hole -->
+      <circle cx="400" cy="385" r="15" fill="#f5eedb" stroke="#0f3454" stroke-width="4" />
+    </g>
+
+    <!-- ARCHED SUSPENSION BRIDGE -->
+    <g>
+      <!-- Bridge Shadow -->
+      <path d="M 235 365 C 275 220 525 220 565 365" fill="none" stroke="#081e13" stroke-width="26" opacity="0.35" />
+
+      <!-- Back Arch Outline -->
+      <path d="M 255 345 C 290 190 510 190 545 345" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" />
+      <path d="M 255 345 C 290 190 510 190 545 345" fill="none" stroke="#103e63" stroke-width="8" stroke-linecap="round" />
+
+      <!-- Vertical Suspension Cables -->
+      <g stroke="#ffffff" stroke-width="10" stroke-linecap="round">
+        <line x1="320" y1="285" x2="320" y2="335" />
+        <line x1="360" y1="240" x2="360" y2="335" />
+        <line x1="400" y1="220" x2="400" y2="335" />
+        <line x1="440" y1="240" x2="440" y2="335" />
+        <line x1="480" y1="285" x2="480" y2="335" />
+      </g>
+      <g stroke="#0e395c" stroke-width="4" stroke-linecap="round">
+        <line x1="320" y1="285" x2="320" y2="335" />
+        <line x1="360" y1="240" x2="360" y2="335" />
+        <line x1="400" y1="220" x2="400" y2="335" />
+        <line x1="440" y1="240" x2="440" y2="335" />
+        <line x1="480" y1="285" x2="480" y2="335" />
+      </g>
+
+      <!-- Main Heavy Arch Structure (Thick Foreground Rib) -->
+      <path d="M 240 370 
+               C 275 160 525 160 560 370 
+               L 520 365 
+               C 490 205 310 205 280 365 Z" 
+            fill="url(#bridgeGrad)" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" />
+
+      <!-- Lower Horizontal Deck Beam -->
+      <path d="M 125 410 C 270 310 530 310 675 410 C 530 340 270 340 125 410 Z" 
+            fill="#092742" stroke="#ffffff" stroke-width="7" stroke-linejoin="round" />
+    </g>
+
+    <!-- DYNAMIC SWOOSHES / LAUREL CREST ORBIT FRAME -->
+    <!-- Dark Navy Outer Frame Swooshes -->
+    <g fill="#0c2d20" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">
+      
+      <!-- Top Left Crescent -->
+      <path d="M 370 65 
+               C 230 75 130 170 120 295 
+               C 115 350 135 390 145 405 
+               C 130 370 145 280 230 185 
+               C 285 125 350 95 385 85 Z" />
+
+      <!-- Bottom Base Ribbons (Layered Circular Wings) -->
+      <!-- Left bottom sweep -->
+      <path d="M 155 460 
+               C 130 535 210 680 370 725 
+               C 290 695 215 635 190 560 
+               C 175 515 170 480 175 450 Z" />
+
+      <!-- Right bottom sweep -->
+      <path d="M 645 460 
+               C 670 535 590 680 430 725 
+               C 510 695 585 635 610 560 
+               C 625 515 630 480 625 450 Z" />
+
+      <!-- Lowermost Chin Arch -->
+      <path d="M 260 675 
+               C 345 745 455 745 540 675 
+               C 465 720 335 720 260 675 Z" />
+
+      <path d="M 300 710 
+               C 365 750 435 750 500 710 
+               C 445 735 355 735 300 710 Z" />
+
+      <!-- Top Right Outer Feather -->
+      <path d="M 430 65 
+               C 570 75 670 170 680 295 
+               C 685 350 665 390 655 405 
+               C 670 370 655 280 570 185 
+               C 515 125 450 95 415 85 Z" />
+    </g>
+
+    <!-- Inner Floating Curved Accents (Navy & Green Trim) -->
+    <g fill="#0a251b" stroke="#ffffff" stroke-width="4">
+      <!-- Mid-Right Arc Wing -->
+      <path d="M 650 340 C 685 415 650 520 595 595 C 640 520 645 435 620 370 Z" />
+      <!-- Mid-Left Arc Wing -->
+      <path d="M 150 340 C 115 415 150 520 205 595 C 160 520 155 435 180 370 Z" />
+    </g>
+
+    <!-- Outer Fine Boundary Ring Ringlets -->
+    <circle cx="400" cy="400" r="275" fill="none" stroke="#ffffff" stroke-width="4" opacity="0.6" />
+    <circle cx="400" cy="400" r="285" fill="none" stroke="#0b3123" stroke-width="3" />
+
+  </g>
+</svg>

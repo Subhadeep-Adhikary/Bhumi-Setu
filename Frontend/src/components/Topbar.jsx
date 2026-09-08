@@ -80,43 +80,14 @@ function Topbar({ onNewProject, selectedProject, onClearSelection }) {
               height: { xs: 42, md: 48 },
               flexShrink: 0,
               borderRadius: '14px',
-
               display: 'grid',
               placeItems: 'center',
-
-              background:
-                'linear-gradient(145deg, #1f8a59 0%, #125536 100%)',
-
-              boxShadow:
-                '0 6px 16px rgba(22, 99, 61, 0.22)',
+              background: 'linear-gradient(145deg, #1f8a59 0%, #125536 100%)',
+              boxShadow: '0 6px 16px rgba(22, 99, 61, 0.22)',
+              overflow: 'hidden',
             }}
           >
-            <svg
-              width="27"
-              height="27"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5 12.5L16 5L27 12.5V26.5H5V12.5Z"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M10 26.5V16H22V26.5"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M13 20H19"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+            <Box component="img" src="/logo.svg" alt="Bhoomi-Setu logo" sx={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }} />
           </Box>
 
           <Box sx={{ minWidth: 0 }}>

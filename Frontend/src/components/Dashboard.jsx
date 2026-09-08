@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getProjectProgress } from '../hooks/projectdetail';
 
 export function getProjectStats(projectList) {
@@ -103,11 +103,25 @@ const ProgressBar = ({ value, gradient }) => (
   </Box>
 );
 
+function getProjectTimestamp(project) {
+  const rawValue = project.createdAt || project.created_at || project.updatedAt || project.updated_at;
+  const timestamp = Date.parse(rawValue || 0);
+  return Number.isFinite(timestamp) ? timestamp : 0;
+}
+
 export default function Dashboard({ selectedProject, onSelectProject, projects: projectList = [] }) {
-  const displayProjects = projectList;
+  const navigate = useNavigate();
+  const displayProjects = [...projectList]
+    .sort((firstProject, secondProject) => getProjectTimestamp(secondProject) - getProjectTimestamp(firstProject))
+    .slice(0, 2);
   const { total, completed, pending } = getProjectStats(projectList);
   const acquisitionStatuses = getAcquisitionStatuses(projectList);
   const stateSnapshot = getStateSnapshot(projectList);
+
+  const handleProjectSelect = (project) => {
+    onSelectProject(project);
+    navigate('/statutory-workflow');
+  };
 
   return (
     <Box sx={{ width: '100%', minHeight: '100vh', bgcolor: '#ecebe6', p: 0 }}>
@@ -155,20 +169,81 @@ export default function Dashboard({ selectedProject, onSelectProject, projects: 
                   No projects are there
                 </Typography>
               )}
-              {displayProjects.map((project, index) => (
-                <Box key={project.id || project.name} sx={{ minHeight: 220, bgcolor: 'white', borderRadius: '26px', p: 3, boxShadow: '0 10px 30px rgba(0,0,0,0.07)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <Box>
-                    <Typography sx={{ fontWeight: 900, fontSize: 22, color: '#11261c', lineHeight: 1.25 }}>{project.name}</Typography>
-                    <Typography sx={{ fontSize: 15.5, color: index % 2? '#1a5a8a' : '#1a8a64', fontWeight: 700, mt: 0.8 }}>{project.state} • {project.district}</Typography>
+              {displayProjects.map((project, index) => {
+                const isSelected = selectedProject && (selectedProject.id === project.id || selectedProject.parcelId === project.parcelId);
+                const progress = getProjectProgress(project);
+                const status = project.status === 'completed' ? 'Acquired' : 'Under Acquisition';
+
+                return (
+                  <Box
+                    key={project.id || project.name}
+                    component="button"
+                    type="button"
+                    aria-label={project.name}
+                    onClick={() => handleProjectSelect(project)}
+                    sx={{
+                      minHeight: 220,
+                      bgcolor: isSelected ? '#edfaf4' : '#ffffff',
+                      borderRadius: '24px',
+                      p: 2.5,
+                      border: isSelected ? '1.5px solid #1b8a63' : '1px solid #e5eee1',
+                      boxShadow: isSelected
+                        ? '0 12px 28px rgba(22,99,61,0.12)'
+                        : '0 8px 24px rgba(16,33,27,0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 14px 30px rgba(22,99,61,0.1)',
+                      },
+                    }}
+                  >
+                    <Box>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1.5 }}>
+                        <Typography sx={{ fontWeight: 900, fontSize: 19, color: '#11261c', lineHeight: 1.2, letterSpacing: '-0.03em' }}>{project.name}</Typography>
+                        <Box
+                          sx={{
+                            flexShrink: 0,
+                            borderRadius: 999,
+                            px: 1.2,
+                            py: 0.45,
+                            bgcolor: status === 'Acquired' ? '#e3f7ea' : '#f3f5d9',
+                            color: status === 'Acquired' ? '#166b49' : '#8a6d1e',
+                            fontSize: 10.5,
+                            fontWeight: 900,
+                            letterSpacing: '0.02em',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          {status}
+                        </Box>
+                      </Box>
+
+                      <Typography sx={{ fontSize: 14, color: '#1a6d5a', fontWeight: 700, mt: 1.1, letterSpacing: '-0.01em' }}>
+                        {project.state || 'State unavailable'} • {project.district || 'District unavailable'}
+                      </Typography>
+
+                      <Typography sx={{ fontSize: 12.5, color: '#5d7c6d', fontWeight: 500, mt: 1.2, lineHeight: 1.5 }}>
+                        {project.description || 'No description provided for this project.'}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ mt: 3 }}>
+                      <Typography sx={{ fontSize: 14, fontWeight: 800, color: '#1a3a2e', mb: 1.1, letterSpacing: '-0.01em' }}>
+                        Parcel No: {project.parcelId || 'Not available'}
+                      </Typography>
+                      <ProgressBar
+                        value={progress}
+                        gradient={index % 2 ? 'linear-gradient(90deg, #2d9bdf, #6ec6f0)' : 'linear-gradient(90deg, #129b71, #88d9a8)'}
+                      />
+                    </Box>
                   </Box>
-                  <Box sx={{ mt: 4 }}>
-                    <Typography sx={{ fontSize: 16.5, fontWeight: 800, color: '#1a3a2e', mb: 1.4 }}>
-                      Parcel No: {project.parcelId || 'Not available'}
-                    </Typography>
-                    <ProgressBar value={getProjectProgress(project)} gradient={index % 2? 'linear-gradient(90deg, #2d9bdf, #6ec6f0)' : 'linear-gradient(90deg, #129b71, #88d9a8)'} />
-                  </Box>
-                </Box>
-              ))}
+                );
+              })}
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
               <Link

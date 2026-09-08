@@ -735,6 +735,64 @@ function GISMap({ projects: projectRecords = [], selectedProject = null }) {
                       : redMarker
                   }
                 >
+                  <Tooltip
+                    direction="top"
+                    offset={[0, -18]}
+                    opacity={1}
+                    permanent={false}
+                  >
+                    <Box
+                      sx={{
+                        minWidth: 190,
+                        p: 0.25,
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontWeight: 900,
+                          fontSize: 13,
+                          color: "#193c30",
+                          lineHeight: 1.3,
+                        }}
+                      >
+                        {project.name}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          mt: 0.5,
+                          fontSize: 11.5,
+                          color: "#4d665d",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        Parcel No: {project.parcelId || "Not available"}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          mt: 0.2,
+                          fontSize: 11,
+                          color: "#71867c",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {project.district || "District unavailable"}, {project.state || "State unavailable"}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          mt: 0.2,
+                          fontSize: 10.5,
+                          color: "#71867c",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {project.description || project.address || "Address unavailable"}
+                      </Typography>
+                    </Box>
+                  </Tooltip>
+
                   <Popup>
                     <Box
                       sx={{
@@ -769,7 +827,17 @@ function GISMap({ projects: projectRecords = [], selectedProject = null }) {
                           color: "#71867c",
                         }}
                       >
-                        Parcel ID: {project.parcelId}
+                        Parcel No: {project.parcelId || "Not available"}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          mt: 0.4,
+                          fontSize: 11,
+                          color: "#71867c",
+                        }}
+                      >
+                        State: {project.state || "N/A"} • District: {project.district || "N/A"}
                       </Typography>
 
                       <Box
