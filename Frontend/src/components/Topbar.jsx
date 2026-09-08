@@ -9,10 +9,12 @@ import {
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useLocation } from 'react-router-dom';
 import { menuItems } from './Sidebar';
 
-function Topbar({ onNewProject }) {
+function Topbar({ onNewProject, selectedProject, onClearSelection }) {
   const location = useLocation();
 
   const activeMenuItem = menuItems.find(
@@ -251,80 +253,120 @@ function Topbar({ onNewProject }) {
             </IconButton>
           </Tooltip>
 
-          {/* New Project */}
-          <Button
-            variant="contained"
-            onClick={onNewProject}
-            startIcon={
-              <AddRoundedIcon
-                sx={{
-                  fontSize: '24px !important',
-                }}
-              />
-            }
-            endIcon={
-              <KeyboardArrowDownRoundedIcon
-                sx={{
-                  fontSize: '19px !important',
-                  opacity: 0.75,
-                  display: { xs: 'none', sm: 'block' },
-                }}
-              />
-            }
-            sx={{
+          {/* New Project / selected project toggle */}
+          {selectedProject ? (
+            <Button
+              variant="contained"
+              onClick={onClearSelection}
+              startIcon={<ArrowBackRoundedIcon sx={{ fontSize: '20px !important' }} />}
+              endIcon={<CloseRoundedIcon sx={{ fontSize: '18px !important' }} />}
+              sx={{
                 minHeight: { xs: 50, md: 56 },
-                px: { xs: 2.6, md: 3.2 },
-              borderRadius: '13px',
+                px: { xs: 2.2, md: 2.8 },
+                borderRadius: '13px',
+                bgcolor: '#f0f5ef',
+                color: '#143f2e',
+                border: '1px solid #d9e5d7',
+                boxShadow: '0 5px 12px rgba(23, 100, 63, 0.08)',
+                textTransform: 'none',
+                fontSize: { xs: 15, md: 16 },
+                fontWeight: 800,
+                letterSpacing: '-0.01em',
+                whiteSpace: 'nowrap',
+                maxWidth: { xs: 220, sm: 320 },
+                '&:hover': {
+                  bgcolor: '#e7efe7',
+                },
+              }}
+            >
+              <Box
+                component="span"
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  display: 'inline-block',
+                  maxWidth: { xs: 150, sm: 220 },
+                }}
+              >
+                {selectedProject.name || selectedProject.title || 'Selected Project'}
+              </Box>
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={onNewProject}
+              startIcon={
+                <AddRoundedIcon
+                  sx={{
+                    fontSize: '24px !important',
+                  }}
+                />
+              }
+              endIcon={
+                <KeyboardArrowDownRoundedIcon
+                  sx={{
+                    fontSize: '19px !important',
+                    opacity: 0.75,
+                    display: { xs: 'none', sm: 'block' },
+                  }}
+                />
+              }
+              sx={{
+                  minHeight: { xs: 50, md: 56 },
+                  px: { xs: 2.6, md: 3.2 },
+                borderRadius: '13px',
 
-              bgcolor: '#17643f',
-              background:
-                'linear-gradient(135deg, #218b59 0%, #17643f 100%)',
-
-              boxShadow:
-                '0 6px 16px rgba(23, 100, 63, 0.20)',
-
-              textTransform: 'none',
-              fontSize: { xs: 15, md: 18 },
-              fontWeight: 800,
-              letterSpacing: '-0.01em',
-
-              whiteSpace: 'nowrap',
-
-              transition:
-                'transform 180ms ease, box-shadow 180ms ease, background 180ms ease',
-
-              '&:hover': {
-                bgcolor: '#125635',
+                bgcolor: '#17643f',
                 background:
-                  'linear-gradient(135deg, #269b65 0%, #125635 100%)',
-                transform: 'translateY(-1px)',
+                  'linear-gradient(135deg, #218b59 0%, #17643f 100%)',
+
                 boxShadow:
-                  '0 9px 22px rgba(23, 100, 63, 0.27)',
-              },
+                  '0 6px 16px rgba(23, 100, 63, 0.20)',
 
-              '&:active': {
-                transform: 'translateY(0)',
-              },
-            }}
-          >
-            <Box
-              component="span"
-              sx={{
-                display: { xs: 'none', sm: 'inline' },
+                textTransform: 'none',
+                fontSize: { xs: 15, md: 18 },
+                fontWeight: 800,
+                letterSpacing: '-0.01em',
+
+                whiteSpace: 'nowrap',
+
+                transition:
+                  'transform 180ms ease, box-shadow 180ms ease, background 180ms ease',
+
+                '&:hover': {
+                  bgcolor: '#125635',
+                  background:
+                    'linear-gradient(135deg, #269b65 0%, #125635 100%)',
+                  transform: 'translateY(-1px)',
+                  boxShadow:
+                    '0 9px 22px rgba(23, 100, 63, 0.27)',
+                },
+
+                '&:active': {
+                  transform: 'translateY(0)',
+                },
               }}
             >
-              New Project
-            </Box>
+              <Box
+                component="span"
+                sx={{
+                  display: { xs: 'none', sm: 'inline' },
+                }}
+              >
+                New Project
+              </Box>
 
-            <Box
-              component="span"
-              sx={{
-                display: { xs: 'inline', sm: 'none' },
-              }}
-            >
-              New
-            </Box>
-          </Button>
+              <Box
+                component="span"
+                sx={{
+                  display: { xs: 'inline', sm: 'none' },
+                }}
+              >
+                New
+              </Box>
+            </Button>
+          )}
 
           {/* User avatar */}
           <Tooltip title="Account">

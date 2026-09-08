@@ -56,7 +56,11 @@ function App() {
       <Sidebar selectedProject={selectedProject} />
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, height: '100vh' }}>
-        <Topbar onNewProject={() => setIsNewProjectOpen(true)} />
+        <Topbar
+          selectedProject={selectedProject}
+          onNewProject={() => setIsNewProjectOpen(true)}
+          onClearSelection={() => setSelectedProject(null)}
+        />
 
         <NewProjectDialog
           open={isNewProjectOpen}
