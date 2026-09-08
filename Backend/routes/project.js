@@ -54,7 +54,9 @@ router.post('/', async (req, res) => {
 			return res.status(404).json({ message: 'Parcel ID was not found in the mock land database' });
 		}
 		if (error.code === 11000) {
-			return res.status(409).json({ message: 'A project already exists for this parcel' });
+			return res.status(409).json({
+				message: `A project already exists for this parcel under username "${req.user.username}"`,
+			});
 		}
 		if (error.response?.data || error.code === 'ECONNREFUSED') {
 			return res.status(502).json({ message: 'Government verification service is unavailable' });

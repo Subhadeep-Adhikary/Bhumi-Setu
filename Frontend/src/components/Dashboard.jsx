@@ -162,7 +162,9 @@ export default function Dashboard({ selectedProject, onSelectProject, projects: 
                     <Typography sx={{ fontSize: 15.5, color: index % 2? '#1a5a8a' : '#1a8a64', fontWeight: 700, mt: 0.8 }}>{project.state} • {project.district}</Typography>
                   </Box>
                   <Box sx={{ mt: 4 }}>
-                    <Typography sx={{ fontSize: 16.5, fontWeight: 800, color: '#1a3a2e', mb: 1.4 }}>Sec. 77 Compensation</Typography>
+                    <Typography sx={{ fontSize: 16.5, fontWeight: 800, color: '#1a3a2e', mb: 1.4 }}>
+                      Parcel No: {project.parcelId || 'Not available'}
+                    </Typography>
                     <ProgressBar value={getProjectProgress(project)} gradient={index % 2? 'linear-gradient(90deg, #2d9bdf, #6ec6f0)' : 'linear-gradient(90deg, #129b71, #88d9a8)'} />
                   </Box>
                 </Box>

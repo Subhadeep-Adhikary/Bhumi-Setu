@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const requireAuth = require('../middleware/auth');
 
 const router = express.Router();
 const jwtSecret = process.env.JWT_SECRET || 'bhumi-setu-development-secret';
@@ -60,6 +61,12 @@ router.post('/login', async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({ message: 'Unable to log in' });
 	}
+});
+
+router.post('/logout', requireAuth, (req, res) => {
+	const token = req.headers.authorization.slice(7);
+	requireAuth.revokeToken(token, req.user.exp * 1000);
+	return res.json({ message: 'Logged out successfully' });
 });
 
 module.exports = router;

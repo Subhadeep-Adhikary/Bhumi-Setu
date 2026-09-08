@@ -212,6 +212,14 @@ export default function ProjectList({
                         >
                           Land acquisition project
                         </span>
+
+                        <span
+                          className={`mt-1 block text-xs font-extrabold ${
+                            selected ? "text-[#13734e]" : "text-[#2c8c66]"
+                          }`}
+                        >
+                          Parcel No: {project.parcelId || "Not available"}
+                        </span>
                       </span>
                     </span>
 

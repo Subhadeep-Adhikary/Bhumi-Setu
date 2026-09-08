@@ -52,6 +52,14 @@ export function getCurrentUser() {
   return session.user;
 }
 
+export async function logout() {
+  try {
+    await request('/auth/logout', { method: 'POST' });
+  } finally {
+    clearSession();
+  }
+}
+
 export function authenticate(mode, credentials) {
   return request(`/auth/${mode}`, {
     method: 'POST',

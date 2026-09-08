@@ -81,7 +81,15 @@ function App() {
                 />
               )}
             />
-            <Route path="/gis-map" element={<GISMap />} />
+            <Route
+              path="/gis-map"
+              element={(
+                <GISMap
+                  projects={projectList.map(normalizeProject)}
+                  selectedProject={selectedProject}
+                />
+              )}
+            />
             <Route path="/statutory-workflow" element={<Workflow projectId={selectedProject?.id} projects={projectList} />} />
             <Route path="/compensation-calc" element={<CompensationCalc projectId={selectedProject?.id} projects={projectList} onUpdated={updateProject} />} />
             <Route path="/documents" element={<Documents projectId={selectedProject?.id} projects={projectList} />} />

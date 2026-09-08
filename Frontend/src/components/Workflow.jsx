@@ -27,6 +27,12 @@ function Workflow({ projectId, projects }) {
       (document) => document.status === "Verified"
     );
 
+  const hasPaidCompensation =
+    (project.compensation?.payments || []).length > 0 &&
+    project.compensation.payments.every(
+      (payment) => payment.status === "Paid"
+    );
+
   const stages = project.stages.map((stage, index) => {
     if (index === 1 && project.parcelId) {
       return {
@@ -44,12 +50,22 @@ function Workflow({ projectId, projects }) {
       };
     }
 
-    if (index === 3 && project.parcelId && documentsVerified) {
-      return {
-        ...stage,
-        status: "active",
-        activeLabel: "In Progress",
-      };
+    if (index === 3) {
+      if (hasPaidCompensation) {
+        return {
+          ...stage,
+          status: "completed",
+          activeLabel: undefined,
+        };
+      }
+
+      if (project.parcelId && documentsVerified) {
+        return {
+          ...stage,
+          status: "pending",
+          activeLabel: undefined,
+        };
+      }
     }
 
     return stage;
@@ -351,14 +367,10 @@ function Workflow({ projectId, projects }) {
                       alignItems: "center",
                       justifyContent: "center",
 
-                      bgcolor: isCompleted
-                        ? "#16835c"
-                        : isActive
-                        ? "#ffffff"
-                        : "#edf3ee",
+                      bgcolor: "#ffffff",
 
                       color: isCompleted
-                        ? "#ffffff"
+                        ? "#16835c"
                         : isActive
                         ? "#167152"
                         : "#779187",
@@ -375,13 +387,13 @@ function Workflow({ projectId, projects }) {
                       boxShadow: isActive
                         ? "0 0 0 6px rgba(22,131,92,0.10), 0 8px 20px rgba(22,131,92,0.18)"
                         : isCompleted
-                        ? "0 5px 14px rgba(22,131,92,0.18)"
+                        ? "0 0 0 6px rgba(22,131,92,0.10), 0 8px 20px rgba(22,131,92,0.18)"
                         : "none",
 
                       transition: "all 0.25s ease",
                     }}
                   >
-                    {isCompleted ? "✓" : stage.short}
+                    {stage.short || index + 1}
                   </Box>
 
                   {/* Stage title */}

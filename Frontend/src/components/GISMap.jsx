@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Stack,
@@ -13,7 +13,6 @@ import {
   Marker,
   Popup,
   Circle,
-  Polygon,
   useMap,
 } from "react-leaflet";
 
@@ -376,67 +375,64 @@ const StatCard = ({
    GIS MAP
 ============================================================ */
 
-function GISMap() {
+function GISMap({ projects: projectRecords = [], selectedProject = null }) {
   const [mapType, setMapType] = useState("street");
+  const [locations, setLocations] = useState({});
 
-  /*
-   * Sample project locations.
-   *
-   * Replace these coordinates with your actual
-   * project / acquisition data from the backend.
-   */
-  const projects = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "NH-44 Project",
-        district: "Narsinghpur",
-        state: "Madhya Pradesh",
-        position: [22.95, 79.19],
-        status: "Under Acquisition",
-      },
-      {
-        id: 2,
-        name: "NH-46 Expansion",
-        district: "Bhopal",
-        state: "Madhya Pradesh",
-        position: [23.2599, 77.4126],
-        status: "Proposed",
-      },
-      {
-        id: 3,
-        name: "Delhi–Mumbai Corridor",
-        district: "Vadodara",
-        state: "Gujarat",
-        position: [22.3072, 73.1812],
-        status: "Acquired",
-      },
-      {
-        id: 4,
-        name: "Eastern Corridor",
-        district: "Ranchi",
-        state: "Jharkhand",
-        position: [23.3441, 85.3096],
-        status: "Under Acquisition",
-      },
-    ],
-    []
+  const projects = useMemo(() => projectRecords.map((project) => ({
+    ...project,
+    address: [project.district, project.state].filter(Boolean).join(", "),
+    position: locations[project.id]?.position || INDIA_CENTER,
+    status: project.status === "completed" ? "Acquired" : "Under Acquisition",
+  })), [locations, projectRecords]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function geocodeProjects() {
+      const missingProjects = projectRecords.filter((project) => !locations[project.id]);
+      const nextLocations = {};
+
+      for (const project of missingProjects) {
+        const address = [project.district, project.state, "India"]
+          .filter(Boolean)
+          .join(", ");
+        if (!address) continue;
+
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(address)}`,
+            { headers: { Accept: "application/json" } },
+          );
+          const results = await response.json();
+          const result = results[0];
+          if (result) {
+            nextLocations[project.id] = {
+              position: [Number(result.lat), Number(result.lon)],
+            };
+          }
+        } catch (error) {
+          // Keep the project visible at the India fallback when geocoding is unavailable.
+        }
+      }
+
+      if (!cancelled && Object.keys(nextLocations).length > 0) {
+        setLocations((current) => ({ ...current, ...nextLocations }));
+      }
+    }
+
+    geocodeProjects();
+    return () => { cancelled = true; };
+  }, [projectRecords, locations]);
+
+  const visibleProjects = selectedProject
+    ? projects.filter((project) => project.id === selectedProject.id)
+    : projects;
+
+  const totalArea = projectRecords.reduce(
+    (total, project) => total + Number(project.compensation?.landArea || 0),
+    0,
   );
-
-  /*
-   * Example corridor geometry.
-   *
-   * Replace this with your actual GeoJSON / GIS
-   * geometry from PostGIS.
-   */
-  const corridor = [
-    [24.2, 77.2],
-    [23.9, 77.8],
-    [23.5, 78.4],
-    [23.1, 79.0],
-    [22.8, 79.5],
-    [22.4, 80.0],
-  ];
 
   const tileUrl =
     mapType === "satellite"
@@ -706,22 +702,6 @@ function GISMap() {
                 url={tileUrl}
               />
 
-              {/* =================================================
-                  CORRIDOR
-              ================================================== */}
-
-              <Polygon
-                positions={corridor}
-                pathOptions={{
-                  color: "#17643f",
-                  weight: 5,
-                  opacity: 0.9,
-
-                  fillColor: "#55a875",
-                  fillOpacity: 0.16,
-                }}
-              />
-
               {/* Corridor buffer */}
 
               <Circle
@@ -741,7 +721,7 @@ function GISMap() {
                   PROJECT MARKERS
               ================================================== */}
 
-              {projects.map((project) => (
+              {visibleProjects.map((project) => (
                 <Marker
                   key={project.id}
                   position={project.position}
@@ -779,8 +759,17 @@ function GISMap() {
                           color: "#71867c",
                         }}
                       >
-                        {project.district},{" "}
-                        {project.state}
+                        {project.address || "Address unavailable"}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          mt: 0.4,
+                          fontSize: 11,
+                          color: "#71867c",
+                        }}
+                      >
+                        Parcel ID: {project.parcelId}
                       </Typography>
 
                       <Box
@@ -852,9 +841,9 @@ function GISMap() {
                 fontWeight: 600,
               }}
             >
-              Scroll to zoom · Drag to
-              explore · Click markers for
-              details
+              {selectedProject
+                ? "Showing the selected project's parcel"
+                : "Showing all project parcels from your account"}
             </Typography>
 
             <Typography
@@ -1064,27 +1053,27 @@ function GISMap() {
         >
           <StatCard
             icon="🗺️"
-            value="3,842"
+            value={projectRecords.length}
             label="Total Parcels"
           />
 
           <StatCard
             icon="✅"
-            value="2,761"
+            value={projectRecords.filter((project) => project.status === "completed").length}
             label="Acquired"
             color="#0d7a4a"
           />
 
           <StatCard
             icon="📌"
-            value="680"
+            value={projectRecords.filter((project) => project.status !== "completed").length}
             label="Proposed"
             color="#2b7656"
           />
 
           <StatCard
             icon="📐"
-            value="4,210 ha"
+            value={`${totalArea.toFixed(1)} ha`}
             label="Affected Area"
           />
 

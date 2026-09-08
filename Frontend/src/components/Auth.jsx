@@ -67,7 +67,7 @@ export default function Auth() {
             <Box sx={{ width: 42, height: 42, bgcolor: 'white', borderRadius: 2, display: 'grid', placeItems: 'center', color: '#17633d' }}>
               <LockOutlinedIcon />
             </Box>
-            <Typography sx={{ fontWeight: 900, fontSize: 20, letterSpacing: 0.5 }}>LANDSYNC</Typography>
+            <Typography sx={{ fontWeight: 900, fontSize: 20, letterSpacing: 0.5 }}>Bhoomi-Setu</Typography>
           </Box>
         </Box>
 
@@ -81,7 +81,6 @@ export default function Auth() {
 
           <Box sx={{ mt: 5, display: 'grid', gap: 2 }}>
             {[
-              '✓ Sec. 77 Compensation Tracking',
               '✓ State-wise Acquisition Snapshot',
               '✓ Document Verification System'
             ].map(text => (
