@@ -38,9 +38,9 @@ function Topbar({ onNewProject }) {
     >
       <Box
         sx={{
-          minHeight: { xs: 76, md: 88 },
+          minHeight: { xs: 90, md: 104 },
           px: { xs: 2, sm: 3, md: 4 },
-          py: { xs: 1.5, md: 2 },
+          py: { xs: 1.8, md: 2.2 },
 
           display: 'flex',
           alignItems: 'center',
@@ -129,7 +129,7 @@ function Topbar({ onNewProject }) {
             >
               <Typography
                 sx={{
-                  fontSize: 11,
+                  fontSize: 13,
                   fontWeight: 800,
                   color: '#1f8a59',
                   textTransform: 'uppercase',
@@ -143,7 +143,7 @@ function Topbar({ onNewProject }) {
               <Typography
                 sx={{
                   color: '#a1aaa5',
-                  fontSize: 12,
+                  fontSize: 14,
                 }}
               >
                 /
@@ -152,7 +152,7 @@ function Topbar({ onNewProject }) {
               <Typography
                 sx={{
                   color: '#7a8780',
-                  fontSize: 11,
+                  fontSize: 13,
                   fontWeight: 600,
                 }}
               >
@@ -163,7 +163,7 @@ function Topbar({ onNewProject }) {
             {/* Page title */}
             <Typography
               sx={{
-                fontSize: { xs: 21, sm: 24, md: 27 },
+                fontSize: { xs: 28, sm: 32, md: 36 },
                 fontWeight: 850,
                 color: '#102219',
                 lineHeight: 1.15,
@@ -182,7 +182,7 @@ function Topbar({ onNewProject }) {
               sx={{
                 display: { xs: 'none', sm: 'block' },
                 mt: 0.35,
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: 500,
                 color: '#748078',
                 letterSpacing: '0.005em',
@@ -258,23 +258,22 @@ function Topbar({ onNewProject }) {
             startIcon={
               <AddRoundedIcon
                 sx={{
-                  fontSize: '21px !important',
+                  fontSize: '24px !important',
                 }}
               />
             }
             endIcon={
               <KeyboardArrowDownRoundedIcon
                 sx={{
-                  fontSize: '17px !important',
+                  fontSize: '19px !important',
                   opacity: 0.75,
                   display: { xs: 'none', sm: 'block' },
                 }}
               />
             }
             sx={{
-              minHeight: { xs: 42, md: 46 },
-              px: { xs: 1.8, md: 2.2 },
-
+                minHeight: { xs: 50, md: 56 },
+                px: { xs: 2.6, md: 3.2 },
               borderRadius: '13px',
 
               bgcolor: '#17643f',
@@ -285,7 +284,7 @@ function Topbar({ onNewProject }) {
                 '0 6px 16px rgba(23, 100, 63, 0.20)',
 
               textTransform: 'none',
-              fontSize: { xs: 13, md: 14 },
+              fontSize: { xs: 15, md: 18 },
               fontWeight: 800,
               letterSpacing: '-0.01em',
 

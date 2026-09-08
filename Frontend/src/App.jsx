@@ -47,14 +47,15 @@ function App() {
     <Box
       sx={{
         display: 'flex',
-        minHeight: '100vh',
+        height: '100vh',
+        overflow: 'hidden',
         bgcolor: '#eef2ee', // light bg like in image
         p: 0,
       }}
     >
       <Sidebar selectedProject={selectedProject} />
 
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, height: '100vh' }}>
         <Topbar onNewProject={() => setIsNewProjectOpen(true)} />
 
         <NewProjectDialog
@@ -63,7 +64,7 @@ function App() {
           onCreated={addProject}
         />
 
-        <Box sx={{ flex: 1, p: 2.5, overflowY: 'auto' }}>
+        <Box sx={{ flex: 1, px: 2.5, pb: 2.5, pt: 2, overflowY: 'auto', minHeight: 0 }}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route

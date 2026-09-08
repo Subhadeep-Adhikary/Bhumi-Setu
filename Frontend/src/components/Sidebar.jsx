@@ -86,7 +86,9 @@ function Sidebar({ selectedProject }) {
       component="aside"
       sx={{
         width: 430,
-        minHeight: '100vh',
+        height: '100vh',
+        position: 'sticky',
+        top: 0,
 
         display: 'flex',
         alignItems: 'flex-start',
@@ -198,7 +200,7 @@ function Sidebar({ selectedProject }) {
           >
             <Typography
               sx={{
-                fontSize: 27,
+                fontSize: 30,
                 fontWeight: 800,
 
                 color: '#1d3d2a',
@@ -217,7 +219,7 @@ function Sidebar({ selectedProject }) {
 
             <Typography
               sx={{
-                fontSize: 12,
+                fontSize: 13,
 
                 fontWeight: 700,
 
@@ -251,7 +253,7 @@ function Sidebar({ selectedProject }) {
 
             color: '#6b8a6b',
 
-            fontSize: 12,
+            fontSize: 13,
 
             fontWeight: 800,
 
@@ -294,7 +296,7 @@ function Sidebar({ selectedProject }) {
                   sx={{
                     width: '100%',
 
-                    minHeight: 48,
+                    minHeight: 56,
 
                     justifyContent: 'flex-start',
 
@@ -338,7 +340,7 @@ function Sidebar({ selectedProject }) {
                   {/* Icon */}
                   <Icon
                     sx={{
-                      fontSize: 22,
+                      fontSize: 26,
 
                       mr: 1.4,
 
@@ -353,7 +355,7 @@ function Sidebar({ selectedProject }) {
                   {/* Menu label */}
                   <Typography
                     sx={{
-                      fontSize: 16,
+                      fontSize: 18,
 
                       fontWeight: isActive
                         ? 700
@@ -443,8 +445,8 @@ function Sidebar({ selectedProject }) {
           {/* Avatar */}
           <Avatar
             sx={{
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
 
               flexShrink: 0,
 
@@ -452,7 +454,7 @@ function Sidebar({ selectedProject }) {
 
               color: '#f4f7f3',
 
-              fontSize: 16,
+              fontSize: 17,
 
               fontWeight: 800,
 
@@ -478,7 +480,7 @@ function Sidebar({ selectedProject }) {
             <Typography
               title={username}
               sx={{
-                fontSize: 16,
+                fontSize: 17,
 
                 fontWeight: 700,
 
@@ -505,7 +507,7 @@ function Sidebar({ selectedProject }) {
 
             <Typography
               sx={{
-                fontSize: 13,
+                fontSize: 14,
 
                 color: '#5a7a66',
 
