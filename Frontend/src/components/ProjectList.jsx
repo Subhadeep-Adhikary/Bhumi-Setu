@@ -210,7 +210,7 @@ export default function ProjectList({
                               : "text-[#8aa096]"
                           }`}
                         >
-                          Land acquisition project
+                          {project.description || "Land acquisition project"}
                         </span>
 
                         <span

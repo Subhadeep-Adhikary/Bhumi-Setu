@@ -84,8 +84,8 @@ function Sidebar({ selectedProject }) {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, px: 0.5, mb: 3, mt: 0.5, minWidth: 0 }}>
-          <Box sx={{ width: 58, height: 58, borderRadius: '14px', bgcolor: '#dfeecf', display: 'grid', placeItems: 'center', p: '4px', flexShrink: 0, boxShadow: '0 8px 18px rgba(23,99,61,0.12)' }}>
-            <Box component="img" src="/logo.svg" alt="Bhoomi-Setu logo" sx={{ width: '100%', height: '100%', borderRadius: '10px', objectFit: 'cover', display: 'block' }} />
+          <Box sx={{ width: 72, height: 72, display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+            <Box component="img" src="/logo.svg" alt="Bhoomi-Setu logo" sx={{ width: '100%', height: '100%', display: 'block', objectFit: 'contain' }} />
           </Box>
           <Box sx={{ minWidth: 0, overflow: 'hidden' }}>
             <Typography sx={{ fontSize: 30, fontWeight: 800, color: '#1d3d2a', letterSpacing: '-0.035em', lineHeight: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>

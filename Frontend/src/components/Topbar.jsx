@@ -76,18 +76,15 @@ function Topbar({ onNewProject, selectedProject, onClearSelection }) {
           {/* Brand / SVG mark */}
           <Box
             sx={{
-              width: { xs: 42, md: 48 },
-              height: { xs: 42, md: 48 },
+              width: { xs: 62, md: 72 },
+              height: { xs: 62, md: 72 },
               flexShrink: 0,
-              borderRadius: '14px',
               display: 'grid',
               placeItems: 'center',
-              background: 'linear-gradient(145deg, #1f8a59 0%, #125536 100%)',
-              boxShadow: '0 6px 16px rgba(22, 99, 61, 0.22)',
               overflow: 'hidden',
             }}
           >
-            <Box component="img" src="/logo.svg" alt="Bhoomi-Setu logo" sx={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }} />
+            <Box component="img" src="/logo.svg" alt="Bhoomi-Setu logo" sx={{ width: '100%', height: '100%', display: 'block', objectFit: 'contain' }} />
           </Box>
 
           <Box sx={{ minWidth: 0 }}>
