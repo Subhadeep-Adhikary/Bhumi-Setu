@@ -1,13 +1,37 @@
 import { Box, Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { useRef } from 'react';
 import { useProjectDetail } from '../hooks/projectdetail';
 
 function Documents({ projectId, projects }) {
   const project = useProjectDetail(projectId, projects);
+  const fileInputRef = useRef(null);
+
   if (!project) return <Typography sx={{ p: 4, color: '#4d7866' }}>No project selected</Typography>;
   const documents = project.documents;
 
+  const handleBrowseFiles = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelection = (event) => {
+    const selectedFiles = Array.from(event.target.files || []);
+    if (selectedFiles.length > 0) {
+      console.log('Selected land records:', selectedFiles.map((file) => file.name));
+    }
+  };
+
   return (
     <Box sx={{ width: '100%', minHeight: '100vh', bgcolor: '#f0f4f0', p: 3, boxSizing: 'border-box' }}>
+      <input
+        id="land-record-upload"
+        ref={fileInputRef}
+        type="file"
+        accept=".doc,.docx,.pdf,.csv"
+        multiple
+        onChange={handleFileSelection}
+        style={{ display: 'none' }}
+      />
+
       <Box
         sx={{
           width: '100%',
@@ -36,6 +60,7 @@ function Documents({ projectId, projects }) {
         </Typography>
 
         <Button
+          onClick={handleBrowseFiles}
           sx={{
             bgcolor: '#0f5d36',
             color: '#fff',

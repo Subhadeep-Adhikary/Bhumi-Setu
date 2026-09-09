@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import Dashboard from './components/Dashboard';
+import Documents from './components/Documents';
 import { clearSession } from './api';
 
 test('redirects unauthenticated users to login', () => {
@@ -36,4 +37,29 @@ test('shows only the two most recently created projects and allows selection', (
 
   fireEvent.click(screen.getByRole('button', { name: /newest project/i }));
   expect(onSelectProject).toHaveBeenCalledWith(projects[2]);
+});
+
+test('activates the document upload input from the browse files button', () => {
+  const projects = [{
+    id: 'p-1',
+    name: 'Project Alpha',
+    documents: [
+      { name: 'Jamabandi', owner: 'Ramesh Kumar', plot: '12', area: '1200 sq ft', match: 98, status: 'Verified', flagged: false },
+    ],
+  }];
+
+  render(
+    <BrowserRouter>
+      <Documents projectId="p-1" projects={projects} />
+    </BrowserRouter>,
+  );
+
+  const input = document.getElementById('land-record-upload');
+  expect(input).toBeInTheDocument();
+  expect(input).toHaveAttribute('type', 'file');
+
+  const file = new File(['dummy'], 'record.pdf', { type: 'application/pdf' });
+  fireEvent.change(input, { target: { files: [file] } });
+
+  expect(input.files[0]).toBe(file);
 });
