@@ -62,7 +62,7 @@ export default function Auth() {
         <Box sx={{ position: 'absolute', top: -100, left: -100, width: 400, height: 400, borderRadius: '50%', bgcolor: 'rgba(255,255,255,0.07)' }} />
         <Box sx={{ position: 'absolute', bottom: -80, right: -80, width: 300, height: 300, borderRadius: '50%', bgcolor: 'rgba(20,180,126,0.25)' }} />
 
-        <Box sx={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'center', pt: 2, pb: 4 }}>
+        <Box sx={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'flex-start', pt: 2, pb: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, transform: 'translateY(-6px)' }}>
             <Box sx={{ width: 92, height: 92, display: 'grid', placeItems: 'center' }}>
               <Box component="img" src="/logo.svg" alt="Bhoomi-Setu logo" sx={{ width: '100%', height: '100%', display: 'block', objectFit: 'contain' }} />
